@@ -1,26 +1,654 @@
 @import "tailwindcss";
 
+/* ============================================================
+   Duru Gencay — Portfolio design tokens
+   Deep-space / cloud-tech aesthetic
+   ============================================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Base surfaces (dark) */
+  --bg: #05060b;
+  --bg-2: #080a13;
+  --surface: #0d1120;
+  --surface-2: #131829;
+  --border: rgba(148, 163, 184, 0.12);
+  --border-strong: rgba(148, 163, 184, 0.22);
+
+  /* Text */
+  --fg: #e8ecf6;
+  --fg-muted: #9aa6c0;
+  --fg-subtle: #6b7793;
+
+  /* Aurora accents (teal → cyan → violet) */
+  --teal: #2dd4bf;
+  --cyan: #22d3ee;
+  --violet: #a78bfa;
+  --indigo: #818cf8;
+  --accent: var(--cyan);
+
+  /* Effects */
+  --glass: rgba(255, 255, 255, 0.04);
+  --glass-strong: rgba(255, 255, 255, 0.07);
+  --blur: 16px;
+  --radius: 18px;
+
+  /* Gradients */
+  --aurora: linear-gradient(120deg, var(--teal) 0%, var(--cyan) 42%, var(--violet) 100%);
 }
 
+/* Map tokens into Tailwind's theme so `bg-surface`, `text-muted`, etc. work. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border-subtle: var(--border);
+  --color-fg: var(--fg);
+  --color-muted: var(--fg-muted);
+  --color-subtle: var(--fg-subtle);
+  --color-teal: var(--teal);
+  --color-cyan: var(--cyan);
+  --color-violet: var(--violet);
+  --color-indigo: var(--indigo);
+  --color-accent: var(--accent);
+
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  --radius-glass: var(--radius);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ------------------------------------------------------------ base */
+* {
+  border-color: var(--border);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Lenis controls scroll; disable native smooth to avoid double-easing. */
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(34, 211, 238, 0.3);
+  color: #fff;
+}
+
+/* ============================================================
+   Ambient background — "cloud engineer's workspace"
+   Blueprint grid + glowing nodes + connection lines +
+   cursor-reactive lighting + slow parallax.
+   Owned by <AmbientBackground /> and integrated globally.
+   ============================================================ */
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict; /* isolate from layout/paint of the rest of the page */
+}
+
+/* static base tint for depth */
+.ambient-base {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60% 55% at 15% -5%, rgba(45, 212, 191, 0.08), transparent 60%),
+    radial-gradient(55% 50% at 90% 5%, rgba(167, 139, 250, 0.08), transparent 60%),
+    radial-gradient(70% 60% at 50% 115%, rgba(129, 140, 248, 0.06), transparent 60%);
+}
+
+/* blueprint grid — a single, very faint grid that fades into the void */
+.ambient-grid {
+  position: absolute;
+  inset: -8%;
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.04) 1px, transparent 1px);
+  background-size:
+    120px 120px,
+    120px 120px;
+  -webkit-mask-image: radial-gradient(ellipse 72% 60% at 50% 38%, #000 12%, transparent 78%);
+  mask-image: radial-gradient(ellipse 72% 60% at 50% 38%, #000 12%, transparent 78%);
+  will-change: background-position;
+  /* Fades up when the boot cue lands (`--pre` removed). */
+  opacity: 1;
+  transition: opacity 1.4s ease;
+}
+
+/* Held invisible while the boot screen is still up. */
+.ambient-grid--pre {
+  opacity: 0;
+}
+
+/* slow, barely-perceptible drift — one full grid cell over ~40s */
+.ambient-grid--drift {
+  animation: ambient-grid-drift 40s linear infinite;
+}
+@keyframes ambient-grid-drift {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 120px 120px, 120px 120px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ambient-grid--drift { animation: none; }
+}
+
+@keyframes boot-blink {
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
+}
+
+/* Scroll cue — a hairline that speaks the same visual language as the
+   Journey timeline (teal→cyan line), with a dot travelling down it. */
+.scroll-cue {
+  position: relative;
+  width: 1px;
+  height: 44px;
+  background: linear-gradient(to bottom, var(--teal), transparent);
+  overflow: hidden;
+}
+.scroll-cue::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 3px;
+  height: 8px;
+  margin-left: -1.5px;
+  border-radius: 2px;
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+  animation: scroll-cue-dot 1.9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+@keyframes scroll-cue-dot {
+  0% { transform: translateY(-6px); opacity: 0; }
+  30% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(40px); opacity: 0; }
+}
+
+/* ------------------------------------------------------------ utilities */
+@layer utilities {
+  .aurora-text {
+    background: var(--aurora);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Like aurora-text, but a wider gradient whose position tracks the cursor. */
+  .name-gradient {
+    background: var(--aurora);
+    background-size: 200% 100%;
+    background-position: 50% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(var(--blur));
+    -webkit-backdrop-filter: blur(var(--blur));
+    border: 1px solid var(--border);
+  }
+
+  .glass-strong {
+    background: var(--glass-strong);
+    backdrop-filter: blur(calc(var(--blur) + 6px));
+    -webkit-backdrop-filter: blur(calc(var(--blur) + 6px));
+    border: 1px solid var(--border-strong);
+  }
+
+  .aurora-border {
+    background:
+      linear-gradient(var(--surface), var(--surface)) padding-box,
+      var(--aurora) border-box;
+    border: 1px solid transparent;
+  }
+
+  .glow-teal {
+    box-shadow: 0 0 40px -12px rgba(45, 212, 191, 0.5);
+  }
+  .glow-violet {
+    box-shadow: 0 0 40px -12px rgba(167, 139, 250, 0.5);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .section-pad {
+    padding-inline: clamp(1.25rem, 5vw, 6rem);
+  }
+}
+
+/* ------------------------------------------------------------ focus + a11y */
+:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -120%);
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 0 0 12px 12px;
+  transition: transform 0.2s ease;
+}
+.skip-link:focus {
+  transform: translate(-50%, 0);
+}
+
+/* ------------------------------------------------------------ scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--surface-2);
+  border-radius: 8px;
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #1f2740;
+}
+
+/* ------------------------------------------------------------ reduced motion */
+/* Gentler, not off: kill decorative *keyframe* loops (drifts, pulses, pings)
+   and instant-scroll, but leave CSS transitions running so opacity/colour
+   fades still aid comprehension. Movement itself is suppressed upstream — the
+   JS entrances/parallax are gated on the `reduced` store flag and render at
+   rest — so what survives here is only gentle, in-place easing. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* ============================================================
+   Future Destination globe — perpetual decorative motion.
+   Baked as CSS keyframes (not Framer JS loops) so they run off the
+   main thread and don't compete with pointer/scroll work. The centering
+   translate(-50%, -50%) lives inside the keyframe so it survives the
+   animated transform; the in-UI reduced-motion toggle simply omits the
+   class, and OS-level reduced motion is neutralised by the block above.
+   ============================================================ */
+@keyframes fd-candidate {
+  0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.25; }
+  50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.8; }
+}
+.fd-candidate {
+  animation: fd-candidate 3s ease-in-out infinite;
+}
+
+@keyframes fd-ring {
+  from { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+  to { transform: translate(-50%, -50%) scale(2.6); opacity: 0; }
+}
+.fd-ring {
+  animation: fd-ring 2.2s cubic-bezier(0, 0, 0.58, 1) infinite;
+}
+
+/* ============================================================
+   Bookshelf — warm, paper-textured shelf with a real book hinge.
+   All styles scoped to .bs-section so nothing bleeds into the
+   deep-space theme. Prefix: bs-  (ported from the reference shelf)
+   ============================================================ */
+.bs-section {
+  --bs-fg: #ede8df;
+  --bs-mid: rgba(237, 232, 223, 0.5);
+  --bs-dim: rgba(237, 232, 223, 0.18);
+
+  position: relative;
+  /* Deep-space panel to match the rest of the site; the warm book
+     colours pop against the cool navy. */
+  background:
+    radial-gradient(120% 90% at 50% -10%, rgba(34, 211, 238, 0.08), transparent 60%),
+    linear-gradient(180deg, #0d1120 0%, #080a13 100%);
+  color: var(--bs-fg);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 22px;
+  padding: 48px 32px 40px;
+  overflow: hidden;
+  box-shadow: 0 40px 80px -50px rgba(0, 0, 0, 0.9);
+}
+
+/* Heading inside the warm panel */
+.bs-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 30px;
+}
+.bs-heading h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(22px, 3.4vw, 30px);
+  color: var(--bs-fg);
+  line-height: 1;
+}
+.bs-sublabel {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--bs-mid);
+}
+
+/* ── Shelf shell ───────────────────────────────────────────── */
+.bs-shelf-outer {
+  position: relative;
+  width: 100%;
+}
+.bs-viewport {
+  overflow: hidden;
+  padding-top: 22px; /* headroom for leaned book tops */
+  cursor: grab;
+}
+.bs-books-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  width: max-content;
+  /* Centre the shelf when the books fit the viewport; when they overflow,
+     auto margins collapse to 0 and the drag/lerp scroll takes over. */
+  margin: 0 auto;
+  will-change: transform;
+}
+
+/* Shelf plank */
+.bs-plank {
+  width: calc(100% + 64px);
+  margin-left: -32px;
+  height: 6px;
+  background: var(--bs-fg);
+  opacity: 0.15;
+  border-radius: 1px;
+}
+
+/* ── Scroll arrows ─────────────────────────────────────────── */
+.bs-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #522b12;
+  border: 1px solid #522b12;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  color: #f5f3ea;
+  font-size: 20px;
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: background 0.2s, opacity 0.3s;
+}
+.bs-arrow:hover {
+  background: #265721;
+  border-color: #265721;
+}
+.bs-arrow-left { left: -12px; }
+.bs-arrow-right { right: -12px; }
+.bs-arrow.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ── Book wrap — carries the organic lean ──────────────────── */
+.bs-book-wrap {
+  flex-shrink: 0;
+  transform-origin: bottom center;
+  transition: transform 520ms cubic-bezier(0.32, 0.72, 0, 1);
+  padding: 8px;
+  margin: -8px;
+}
+.bs-book-wrap.open {
+  transform: rotateZ(0deg) !important;
+}
+
+/* Book button (perspective container) */
+.bs-book-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  outline: none;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  gap: 0;
+  transition: width 520ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+/* Hover must re-declare `width` here: `transition` is not additive, so a hover
+   rule listing only `transform` would drop the width transition — and since you
+   are always hovering the book at click time, the open would snap instantly and
+   shove the neighbours aside. Keep both. */
+.bs-book-btn:hover,
+.bs-book-btn:focus-visible {
+  transform: translateY(-2px);
+  transition: transform 200ms ease, width 520ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* ── Spine + Cover: the hinge ──────────────────────────────── */
+.bs-spine,
+.bs-cover {
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+  transition: transform 520ms cubic-bezier(0.32, 0.72, 0, 1), filter 520ms ease;
+  filter: brightness(0.82) contrast(1.9);
+  transform-style: preserve-3d;
+}
+.bs-spine {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  transform-origin: right center;
+  transform: rotateY(0deg);
+}
+.bs-cover {
+  transform-origin: left center;
+  transform: rotateY(88.8deg);
+  /* Hidden while closed: a near-edge-on filtered plane smears on zoom. */
+  visibility: hidden;
+}
+.bs-book-btn.open .bs-spine { transform: rotateY(-60deg); }
+.bs-book-btn.open .bs-cover { transform: rotateY(30deg); visibility: visible; }
+
+.bs-cover svg,
+.bs-cover img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.bs-cover img { object-fit: cover; }
+
+/* Paper texture (baked SVG turbulence — survives browser zoom) */
+.bs-paper-tex {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0.28;
+  z-index: 10;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='8' result='n'/%3E%3CfeDiffuseLighting in='n' lighting-color='white' surfaceScale='1'%3E%3CfeDistantLight azimuth='45' elevation='35'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23p)'/%3E%3C/svg%3E");
+  background-size: 300px 300px;
+  background-repeat: repeat;
+}
+
+/* Binding highlight on the cover's hinge edge */
+.bs-binding {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 2px,
+    rgba(255, 255, 255, 0.5) 3px,
+    rgba(255, 255, 255, 0.25) 4px,
+    rgba(255, 255, 255, 0.25) 6px,
+    transparent 7px,
+    transparent 9px,
+    rgba(255, 255, 255, 0.25) 9px,
+    transparent 12px
+  );
+}
+
+/* Spine title text */
+.bs-spine-title {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 12px;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  user-select: none;
+  margin-top: 12px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+}
+
+/* ── Navigation dots ───────────────────────────────────────── */
+.bs-dots {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 22px;
+}
+.bs-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--bs-dim);
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  transition: background 0.3s, transform 0.3s;
+}
+.bs-dot.active {
+  background: var(--bs-fg);
+  transform: scale(1.6);
+}
+
+/* ── Review card ───────────────────────────────────────────── */
+.bs-review {
+  position: relative;
+  width: min(560px, 100%);
+  min-height: 200px;
+  margin: 32px auto 0;
+}
+.bs-review-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--bs-dim);
+}
+.bs-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.bs-card-title {
+  font-size: clamp(24px, 4vw, 30px);
+  font-weight: 500;
+  color: var(--bs-fg);
+  line-height: 1.15;
+  margin-bottom: 8px;
+  max-width: 460px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+}
+.bs-card-byline {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--bs-mid);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.bs-stars {
+  display: flex;
+  gap: 3px;
+}
+.bs-star { font-size: 11px; line-height: 1; }
+.bs-star.on { color: var(--bs-fg); }
+.bs-star.off { color: var(--bs-dim); }
+.bs-card-thoughts {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--bs-mid);
+  max-width: 460px;
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Honour the site's reduced-motion toggle */
+.bs-section[data-reduced="true"] .bs-book-wrap,
+.bs-section[data-reduced="true"] .bs-spine,
+.bs-section[data-reduced="true"] .bs-cover,
+.bs-section[data-reduced="true"] .bs-book-btn {
+  transition-duration: 0.001ms !important;
+}
+
+@media (max-width: 640px) {
+  .bs-section { padding: 36px 18px 30px; }
 }
