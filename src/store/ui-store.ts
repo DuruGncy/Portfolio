@@ -14,10 +14,9 @@ interface UIState {
   setActiveSection: (id: string) => void;
 
   /**
-   * Flips `true` the moment the boot screen is dismissed. This is the single
-   * cue the hero entrance (and nav / ambient grid) waits on, so the whole
-   * choreography plays *after* the overlay clears rather than invisibly
-   * underneath it.
+   * Gates the hero entrance (and nav / ambient grid) choreography. Defaults to
+   * `true` so the whole sequence plays on load; it previously waited on the
+   * (now-removed) boot screen being dismissed.
    */
   booted: boolean;
   setBooted: () => void;
@@ -43,7 +42,7 @@ export const useUIStore = create<UIState>((set) => ({
   activeSection: "home",
   setActiveSection: (id) => set({ activeSection: id }),
 
-  booted: false,
+  booted: true,
   setBooted: () => set({ booted: true }),
 
   soundEnabled: false,

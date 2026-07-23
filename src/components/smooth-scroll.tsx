@@ -21,12 +21,19 @@ interface SmoothScrollApi {
   stop: () => void;
   /** Resume scrolling. */
   start: () => void;
+  /**
+   * The live Lenis instance (or `null` when reduced-motion disables it).
+   * Exposed so GSAP ScrollTrigger sections can sync their updates to Lenis'
+   * frames — e.g. the Journey timeline calls `lenis.on("scroll", ...)`.
+   */
+  getLenis: () => Lenis | null;
 }
 
 const SmoothScrollContext = createContext<SmoothScrollApi>({
   scrollTo: () => {},
   stop: () => {},
   start: () => {},
+  getLenis: () => null,
 });
 
 export const useSmoothScroll = () => useContext(SmoothScrollContext);
@@ -103,8 +110,10 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
     else document.body.style.overflow = "";
   }, []);
 
+  const getLenis = useCallback(() => lenisRef.current, []);
+
   return (
-    <SmoothScrollContext.Provider value={{ scrollTo, stop, start }}>
+    <SmoothScrollContext.Provider value={{ scrollTo, stop, start, getLenis }}>
       {children}
     </SmoothScrollContext.Provider>
   );

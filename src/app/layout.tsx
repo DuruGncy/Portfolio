@@ -3,7 +3,6 @@ import { Sora, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 import { SmoothScrollProvider } from "@/components/smooth-scroll";
-import { BootScreen } from "@/components/BootScreen";
 import { AmbientBackground } from "@/components/AmbientBackground";
 import { SkipLink } from "@/components/nav/SkipLink";
 import { Navbar } from "@/components/nav/Navbar";
@@ -52,7 +51,7 @@ export default function RootLayout({
         {/* No-JS: never trap visitors behind the boot overlay, and reveal the
             grid immediately since the boot cue never fires without JS. */}
         <noscript>
-          <style>{`.boot-screen{display:none!important}.ambient-grid--pre{opacity:1!important}`}</style>
+          <style>{`.ambient-grid--pre{opacity:1!important}`}</style>
         </noscript>
       </head>
       <body>
@@ -60,7 +59,6 @@ export default function RootLayout({
         <AmbientBackground />
         <Providers>
           <SmoothScrollProvider>
-            <BootScreen />
             <SkipLink />
             <Navbar />
             {children}

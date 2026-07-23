@@ -1,110 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Phone, MapPin, ArrowUp, Copy, Check, ArrowUpRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { Mail, ArrowUp, ArrowUpRight } from "lucide-react";
 import { profile } from "@/content/profile";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useSmoothScroll } from "@/components/smooth-scroll";
 import { SocialIcon } from "@/components/hero/BrandIcons";
-
-/** A contact detail with an optional copy-to-clipboard action. */
-function Field({
-  icon: Icon,
-  label,
-  value,
-  sub,
-  href,
-  copy,
-  delay,
-  reduced,
-}: {
-  icon: React.ComponentType<{ className?: string }>;
-  label: string;
-  value: string;
-  sub?: string;
-  href?: string;
-  copy?: string;
-  delay: number;
-  reduced: boolean;
-}) {
-  const [copied, setCopied] = useState(false);
-
-  const onCopy = async () => {
-    if (!copy) return;
-    try {
-      await navigator.clipboard.writeText(copy);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1600);
-    } catch {
-      /* clipboard blocked — the value is still visible to select */
-    }
-  };
-
-  const Inner = (
-    <>
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface-2 text-accent">
-        <Icon className="h-5 w-5" />
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="block font-mono text-[10px] uppercase tracking-[0.22em] text-subtle">
-          {label}
-        </span>
-        <span className="block truncate font-display text-base font-semibold text-fg">
-          {value}
-        </span>
-        {sub && <span className="block text-xs text-muted">{sub}</span>}
-      </span>
-    </>
-  );
-
-  return (
-    <motion.div
-      initial={reduced ? undefined : { opacity: 0, y: 18 }}
-      whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.5 }}
-      transition={{ duration: 0.5, delay, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative flex items-center gap-4 rounded-2xl glass p-4 transition-colors hover:border-border-strong"
-    >
-      {href ? (
-        <a href={href} className="flex min-w-0 flex-1 items-center gap-4">
-          {Inner}
-        </a>
-      ) : (
-        <div className="flex min-w-0 flex-1 items-center gap-4">{Inner}</div>
-      )}
-
-      {copy && (
-        <button
-          type="button"
-          onClick={onCopy}
-          aria-label={copied ? `${label} copied` : `Copy ${label.toLowerCase()}`}
-          className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-subtle transition-[color,background-color,transform] hover:bg-surface-2 hover:text-fg active:scale-90"
-        >
-          {/* The confirmation is the point of this control — scale the icon in
-              rather than hard-swapping Copy → Check. Crossfaded (absolute) so
-              neither icon shifts the button box. */}
-          <AnimatePresence initial={false}>
-            <motion.span
-              key={copied ? "check" : "copy"}
-              className="absolute inset-0 flex items-center justify-center"
-              initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.6 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.6 }}
-              transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
-            >
-              {copied ? (
-                <Check className="h-4 w-4 text-teal" />
-              ) : (
-                <Copy className="h-4 w-4" />
-              )}
-            </motion.span>
-          </AnimatePresence>
-        </button>
-      )}
-    </motion.div>
-  );
-}
 
 export function Contact() {
   const reduced = useReducedMotion();
@@ -176,38 +77,8 @@ export function Contact() {
         </motion.div>
       </div>
 
-      {/* ---- contact details ---- */}
-      <div className="mx-auto mt-14 grid max-w-3xl gap-3 sm:grid-cols-3">
-        <Field
-          icon={Mail}
-          label="Email"
-          value={profile.email}
-          href={`mailto:${profile.email}`}
-          copy={profile.email}
-          delay={0}
-          reduced={reduced}
-        />
-        <Field
-          icon={Phone}
-          label="Phone"
-          value={profile.phone}
-          href={`tel:${profile.phone.replace(/\s/g, "")}`}
-          copy={profile.phone}
-          delay={0.08}
-          reduced={reduced}
-        />
-        <Field
-          icon={MapPin}
-          label="Location"
-          value="Izmir, Türkiye"
-          sub="Open to relocating in Europe"
-          delay={0.16}
-          reduced={reduced}
-        />
-      </div>
-
       {/* ---- socials ---- */}
-      <div className="mx-auto mt-8 flex max-w-3xl justify-center gap-3">
+      <div className="mx-auto mt-14 flex max-w-3xl justify-center gap-3">
         {socials.map((s, i) => (
           // Wrapper owns the scroll-in transform so the anchor's CSS hover
           // translate stays independent; mirrors the contact-field reveal so
