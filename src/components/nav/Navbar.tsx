@@ -8,6 +8,7 @@ import { useUIStore } from "@/store/ui-store";
 import { useSectionObserver } from "@/hooks/useSectionObserver";
 import { useSmoothScroll } from "@/components/smooth-scroll";
 import { MobileMenu } from "./MobileMenu";
+import { ThemeToggle } from "./ThemeToggle";
 import { clsx } from "@/lib/clsx";
 
 export function Navbar() {
@@ -135,18 +136,21 @@ export function Navbar() {
             })}
           </div>
 
-          {/* Mobile toggle */}
-          <button
-            ref={menuButtonRef}
-            onClick={() => setMenuOpen(true)}
-            aria-label="Open menu"
-            aria-haspopup="dialog"
-            aria-expanded={menuOpen}
-            aria-controls="mobile-menu"
-            className="flex h-11 w-11 items-center justify-center rounded-full glass-strong text-fg transition-transform hover:-translate-y-0.5 active:scale-95 lg:hidden"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
+          {/* Theme toggle (all breakpoints) + mobile menu toggle */}
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              ref={menuButtonRef}
+              onClick={() => setMenuOpen(true)}
+              aria-label="Open menu"
+              aria-haspopup="dialog"
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
+              className="flex h-11 w-11 items-center justify-center rounded-full glass-strong text-fg transition-transform hover:-translate-y-0.5 active:scale-95 lg:hidden"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+          </div>
         </nav>
 
         {/* Scroll progress bar */}

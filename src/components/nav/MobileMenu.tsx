@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { X } from "lucide-react";
 import type { NavLink } from "@/lib/sections";
+import { ThemeToggle } from "./ThemeToggle";
 import { clsx } from "@/lib/clsx";
 
 interface MobileMenuProps {
@@ -93,14 +94,17 @@ export function MobileMenu({
             <span className="font-mono text-xs uppercase tracking-[0.3em] text-accent">
               Navigation
             </span>
-            <button
-              ref={closeRef}
-              onClick={onClose}
-              aria-label="Close menu"
-              className="flex h-11 w-11 items-center justify-center rounded-full glass text-fg"
-            >
-              <X className="h-5 w-5" />
-            </button>
+            <div className="flex items-center gap-2">
+              <ThemeToggle className="glass" />
+              <button
+                ref={closeRef}
+                onClick={onClose}
+                aria-label="Close menu"
+                className="flex h-11 w-11 items-center justify-center rounded-full glass text-fg"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
           </div>
 
           <nav className="section-pad flex flex-1 flex-col justify-center gap-1">

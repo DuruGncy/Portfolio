@@ -12,7 +12,6 @@ export const NAV_LINKS: NavLink[] = [
   { id: "mission-archive", label: "Projects" },
   { id: "skills", label: "Skills" },
   { id: "books", label: "Books" },
-  { id: "future-destination", label: "Future Destination" },
   { id: "contact", label: "Contact" },
 ];
 

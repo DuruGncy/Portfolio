@@ -40,9 +40,23 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      // Default to dark (no-JS / SSR fallback). The boot script below rewrites
+      // this before first paint; suppressHydrationWarning tells React to accept
+      // the DOM the script produced instead of flagging a mismatch.
+      data-theme="dark"
+      suppressHydrationWarning
       className={`${display.variable} ${sans.variable} ${mono.variable} antialiased`}
     >
       <head>
+        {/* Flash-free theme: runs synchronously during HTML parse, before paint.
+            localStorage present ⇒ explicit user choice (sticky); else follow OS. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var s=localStorage.getItem("theme");var t=s||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t);}catch(e){}})()`,
+          }}
+        />
+        {/* Keep native controls / scrollbars in step with either theme. */}
+        <meta name="color-scheme" content="dark light" />
         <script
           type="application/ld+json"
           // JSON-LD Person schema for recruiter tooling & rich results.

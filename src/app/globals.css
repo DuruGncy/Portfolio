@@ -36,6 +36,39 @@
   --aurora: linear-gradient(120deg, var(--teal) 0%, var(--cyan) 42%, var(--violet) 100%);
 }
 
+/* ------------------------------------------------------------ light theme
+   Applied via `data-theme="light"` on <html> (set by the boot script in
+   layout.tsx). Same specificity as `:root`, so this MUST stay *after* it to
+   win. Redefining these variables cascades through the `@theme inline` map
+   below into every `bg-surface` / `text-muted` / `text-teal` utility. The
+   `--aurora` gradient and `--accent` re-resolve automatically to the values
+   below at use-site, so they need no redefinition here.
+   Accents are deepened (vs. the neon dark palette) to stay legible on white. */
+[data-theme="light"] {
+  /* Base surfaces (light) */
+  --bg: #f6f8fc;
+  --bg-2: #eef2f9;
+  --surface: #ffffff;
+  --surface-2: #eef2f9;
+  --border: rgba(15, 23, 42, 0.1);
+  --border-strong: rgba(15, 23, 42, 0.18);
+
+  /* Text */
+  --fg: #0d1220;
+  --fg-muted: #47506a;
+  --fg-subtle: #6b7793;
+
+  /* Aurora accents — deepened for contrast on light surfaces */
+  --teal: #0d9488;
+  --cyan: #0891b2;
+  --violet: #7c3aed;
+  --indigo: #4f46e5;
+
+  /* Effects — frosted white glass instead of a white-on-black tint */
+  --glass: rgba(255, 255, 255, 0.5);
+  --glass-strong: rgba(255, 255, 255, 0.72);
+}
+
 /* Map tokens into Tailwind's theme so `bg-surface`, `text-muted`, etc. work. */
 @theme inline {
   --color-bg: var(--bg);
@@ -90,6 +123,10 @@ body {
   background: rgba(34, 211, 238, 0.3);
   color: #fff;
 }
+[data-theme="light"] ::selection {
+  background: rgba(8, 145, 178, 0.22);
+  color: #0d1220;
+}
 
 /* ============================================================
    Ambient background — "cloud engineer's workspace"
@@ -114,6 +151,20 @@ body {
     radial-gradient(60% 55% at 15% -5%, rgba(45, 212, 191, 0.08), transparent 60%),
     radial-gradient(55% 50% at 90% 5%, rgba(167, 139, 250, 0.08), transparent 60%),
     radial-gradient(70% 60% at 50% 115%, rgba(129, 140, 248, 0.06), transparent 60%);
+}
+
+/* Light mode: warm the wash and darken the grid lines so both read on white
+   (the additive-on-black values above vanish against a light surface). */
+[data-theme="light"] .ambient-base {
+  background:
+    radial-gradient(60% 55% at 15% -5%, rgba(13, 148, 136, 0.1), transparent 60%),
+    radial-gradient(55% 50% at 90% 5%, rgba(124, 58, 237, 0.08), transparent 60%),
+    radial-gradient(70% 60% at 50% 115%, rgba(79, 70, 229, 0.07), transparent 60%);
+}
+[data-theme="light"] .ambient-grid {
+  background-image:
+    linear-gradient(rgba(15, 23, 42, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.05) 1px, transparent 1px);
 }
 
 /* blueprint grid — a single, very faint grid that fades into the void */
@@ -279,6 +330,12 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #1f2740;
 }
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: #cbd3e3;
+}
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: #aeb8ce;
+}
 
 /* ------------------------------------------------------------ reduced motion */
 /* Gentler, not off: kill decorative *keyframe* loops (drifts, pulses, pings)
@@ -351,6 +408,22 @@ body {
   padding: 48px 32px 40px;
   overflow: hidden;
   box-shadow: 0 40px 80px -50px rgba(0, 0, 0, 0.9);
+}
+
+/* Light mode: warm paper panel instead of the deep-space one. Warm-brown ink
+   replaces the cream text; the brown/green scroll arrows already read on paper
+   so they stay. Book covers, paper texture and binding highlights live on the
+   3D books themselves and are theme-independent. */
+[data-theme="light"] .bs-section {
+  --bs-fg: #3a2e22;
+  --bs-mid: rgba(58, 46, 34, 0.6);
+  --bs-dim: rgba(58, 46, 34, 0.25);
+
+  background:
+    radial-gradient(120% 90% at 50% -10%, rgba(8, 145, 178, 0.06), transparent 60%),
+    linear-gradient(180deg, #faf6ee 0%, #f1ead9 100%);
+  border-color: rgba(58, 46, 34, 0.18);
+  box-shadow: 0 40px 80px -50px rgba(58, 46, 34, 0.35);
 }
 
 /* Heading inside the warm panel */

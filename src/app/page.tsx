@@ -5,7 +5,6 @@ import { Journey } from "@/components/journey/Journey";
 import { MissionArchive } from "@/components/projects/MissionArchive";
 import { Skills } from "@/components/skills/Skills";
 import { Books } from "@/components/books/Books";
-import { FutureDestination } from "@/components/future/FutureDestination";
 import { Contact } from "@/components/contact/Contact";
 
 // Sections that have been built render their real component; the rest stay as
@@ -17,7 +16,6 @@ const BUILT: Record<string, React.ComponentType> = {
   "mission-archive": MissionArchive,
   skills: Skills,
   books: Books,
-  "future-destination": FutureDestination,
   contact: Contact,
 };
 
@@ -29,7 +27,6 @@ const PAGE_ORDER = [
   "mission-archive",
   "skills",
   "books",
-  "future-destination",
   "contact",
 ];
 

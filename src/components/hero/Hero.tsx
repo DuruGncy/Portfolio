@@ -278,7 +278,7 @@ export function Hero() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal opacity-70" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-teal" />
             </span>
-            Available for opportunities in Europe
+            Available to relocate
           </motion.p>
 
           {/* name — the loudest element on the page; reveals with a masked
@@ -325,7 +325,7 @@ export function Hero() {
               <Magnetic>
                 <button
                   onClick={() => go("mission-archive")}
-                  className="group inline-flex items-center gap-2 rounded-full bg-fg px-5 py-3 text-sm font-medium text-[#05060b] transition-transform duration-300 will-change-transform hover:-translate-y-0.5 active:scale-[0.97]"
+                  className="group inline-flex items-center gap-2 rounded-full bg-fg px-5 py-3 text-sm font-medium text-bg transition-transform duration-300 will-change-transform hover:-translate-y-0.5 active:scale-[0.97]"
                 >
                   View Projects
                   <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

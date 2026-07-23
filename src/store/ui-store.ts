@@ -31,6 +31,19 @@ interface UIState {
    */
   reducedMotion: boolean;
   setReducedMotion: (value: boolean) => void;
+
+  /**
+   * Effective colour theme. Hydrated from the `data-theme` the inline boot
+   * script set on <html> (localStorage → else OS `prefers-color-scheme`).
+   * `explicitTheme` records whether the visitor has overridden the OS: while
+   * `false`, the OS listener keeps `theme` in sync; a manual toggle flips it
+   * to `true` and persists the choice.
+   */
+  theme: "light" | "dark";
+  explicitTheme: boolean;
+  /** Set theme; `explicit` marks it as a persisted user override. */
+  setTheme: (value: "light" | "dark", explicit?: boolean) => void;
+  toggleTheme: () => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
@@ -50,4 +63,16 @@ export const useUIStore = create<UIState>((set) => ({
 
   reducedMotion: false,
   setReducedMotion: (value) => set({ reducedMotion: value }),
+
+  // SSR default matches the <html data-theme="dark"> fallback; Providers
+  // hydrates the real value from the DOM on mount.
+  theme: "dark",
+  explicitTheme: false,
+  setTheme: (value, explicit = false) =>
+    set((s) => ({ theme: value, explicitTheme: explicit || s.explicitTheme })),
+  toggleTheme: () =>
+    set((s) => ({
+      theme: s.theme === "dark" ? "light" : "dark",
+      explicitTheme: true,
+    })),
 }));
