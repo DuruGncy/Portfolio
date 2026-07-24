@@ -201,7 +201,7 @@ export function Journey() {
           id="journey-title"
           className="font-mono text-xs uppercase tracking-[0.3em] text-accent"
         >
-          <span aria-hidden="true">03 — </span>Journey
+          <span aria-hidden="true">04 — </span>Journey
         </h2>
         <span className="h-px flex-1 bg-border-subtle" />
         <p className="hidden font-mono text-xs uppercase tracking-[0.3em] text-subtle sm:block">

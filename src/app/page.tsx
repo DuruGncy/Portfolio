@@ -1,5 +1,6 @@
 import { NAV_LINKS } from "@/lib/sections";
 import { Hero } from "@/components/hero/Hero";
+import { AISection } from "@/components/ai/AISection";
 import { WhoIAm } from "@/components/about/WhoIAm";
 import { Journey } from "@/components/journey/Journey";
 import { MissionArchive } from "@/components/projects/MissionArchive";
@@ -11,6 +12,7 @@ import { Contact } from "@/components/contact/Contact";
 // lightweight placeholders until they're implemented.
 const BUILT: Record<string, React.ComponentType> = {
   home: Hero,
+  "ai-assistant": AISection,
   "who-i-am": WhoIAm,
   journey: Journey,
   "mission-archive": MissionArchive,
@@ -22,6 +24,7 @@ const BUILT: Record<string, React.ComponentType> = {
 // Page section order, matching the nav destinations.
 const PAGE_ORDER = [
   "home",
+  "ai-assistant",
   "who-i-am",
   "journey",
   "mission-archive",

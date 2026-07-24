@@ -130,7 +130,7 @@ export function WhoIAm() {
         aria-hidden
         className="pointer-events-none absolute -top-6 right-2 select-none font-display text-[28vw] font-bold leading-none text-white/[0.02] md:text-[16rem]"
       >
-        02
+        03
       </span>
 
       {/* masthead */}
@@ -145,7 +145,7 @@ export function WhoIAm() {
           id="who-i-am-title"
           className="font-mono text-xs uppercase tracking-[0.3em] text-accent"
         >
-          <span aria-hidden="true">02 — </span>Who I Am
+          <span aria-hidden="true">03 — </span>Who I Am
         </h2>
         <span className="h-px flex-1 bg-border-subtle" />
         <p className="hidden font-mono text-xs uppercase tracking-[0.3em] text-subtle sm:block">

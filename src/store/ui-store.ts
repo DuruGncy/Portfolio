@@ -9,6 +9,14 @@ interface UIState {
   closeAssistant: () => void;
   toggleAssistant: () => void;
 
+  /**
+   * The visitor asked for the floating widget to go away entirely. Held in
+   * memory only — deliberately *not* persisted, so a reload offers it again.
+   * (Minimising is `assistantOpen: false`; this hides the button too.)
+   */
+  assistantDismissed: boolean;
+  dismissAssistant: () => void;
+
   /** Section currently in view — powers Nav + ProgressRail. */
   activeSection: string;
   setActiveSection: (id: string) => void;
@@ -51,6 +59,9 @@ export const useUIStore = create<UIState>((set) => ({
   openAssistant: () => set({ assistantOpen: true }),
   closeAssistant: () => set({ assistantOpen: false }),
   toggleAssistant: () => set((s) => ({ assistantOpen: !s.assistantOpen })),
+
+  assistantDismissed: false,
+  dismissAssistant: () => set({ assistantDismissed: true, assistantOpen: false }),
 
   activeSection: "home",
   setActiveSection: (id) => set({ activeSection: id }),

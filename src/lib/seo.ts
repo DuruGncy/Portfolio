@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { profile } from "@/content/profile";
 
-const SITE_URL = "https://durugencay.dev"; // update at deploy time
+const SITE_URL = "https://durugencay.com"; // update at deploy time
 const DESCRIPTION = profile.heroIntro;
 
 export const siteMetadata: Metadata = {
@@ -18,8 +18,26 @@ export const siteMetadata: Metadata = {
     "Backend Developer",
     "AWS",
     "Serverless",
-    "Europe",
-    "Izmir",
+    "DynamoDB",
+    "EventBridge",
+    "Python",
+    "Java",
+    "C++",
+    "C#",
+    "JavaScript",
+    "SQL",
+    "Azure",
+    "PostgreSQL",
+    "MySQL",
+    "Oracle",
+    "React",
+    "Node.js",
+    "Unity 6",
+    "Java Swing",
+    "Git",
+    "GitHub",
+    "VS Code",
+    "Docker",
   ],
   authors: [{ name: profile.name }],
   openGraph: {

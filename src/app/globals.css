@@ -387,6 +387,120 @@ body {
 }
 
 /* ============================================================
+   AI assistant — the orb instrument, shared by the showcase
+   section and the floating widget. Everything here is either a
+   compositor-only transform or a static paint, so the orb can
+   run a rAF-driven scale without ever touching layout.
+   Prefix: ai-
+   ============================================================ */
+
+/* Soft aurora bloom behind the core; scale + opacity are driven from JS. */
+.ai-halo {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(34, 211, 238, 0.5) 0%,
+    rgba(167, 139, 250, 0.28) 45%,
+    transparent 70%
+  );
+  filter: blur(14px);
+  will-change: transform, opacity;
+}
+[data-theme="light"] .ai-halo {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(8, 145, 178, 0.4) 0%,
+    rgba(124, 58, 237, 0.22) 45%,
+    transparent 70%
+  );
+}
+
+/* Aurora ring — a conic sweep masked down to a hairline annulus. */
+.ai-ring {
+  background: conic-gradient(
+    from 0deg,
+    var(--teal),
+    var(--cyan) 30%,
+    var(--violet) 62%,
+    var(--indigo) 80%,
+    var(--teal)
+  );
+  -webkit-mask-image: radial-gradient(closest-side, transparent 88%, #000 90%);
+  mask-image: radial-gradient(closest-side, transparent 88%, #000 90%);
+}
+.ai-ring--live {
+  animation: ai-ring-turn 8s linear infinite;
+}
+@keyframes ai-ring-turn {
+  to { transform: rotate(360deg); }
+}
+
+/* The glass core the icon sits in. */
+.ai-core {
+  background:
+    radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.1), transparent 55%),
+    var(--surface);
+  border: 1px solid var(--border-strong);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 18px 40px -24px rgba(0, 0, 0, 0.9);
+  will-change: transform;
+}
+[data-theme="light"] .ai-core {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 18px 40px -26px rgba(15, 23, 42, 0.45);
+}
+
+/* Ripples that fire only while the agent is answering. */
+.ai-ripple {
+  animation: ai-ripple 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  will-change: transform, opacity;
+}
+@keyframes ai-ripple {
+  from { transform: scale(0.9); opacity: 0.5; }
+  to { transform: scale(1.75); opacity: 0; }
+}
+
+/* Idle sign of life: a single spark orbiting the rim. */
+.ai-orbit {
+  animation: ai-ring-turn 11s linear infinite;
+}
+
+/* Availability pulse on the collapsed floating button. */
+.ai-pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 1px solid var(--cyan);
+  animation: ai-pulse 2.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+@keyframes ai-pulse {
+  0% { transform: scale(1); opacity: 0.55; }
+  70%, 100% { transform: scale(1.55); opacity: 0; }
+}
+
+/* "Agent is composing" dots in the text transcript. */
+.ai-typing-dot {
+  animation: ai-typing 1.1s ease-in-out infinite;
+}
+@keyframes ai-typing {
+  0%, 60%, 100% { opacity: 0.25; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+
+/* Faint blueprint texture inside the assistant console panel. */
+.ai-panel-grid {
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+  background-size: 34px 34px, 34px 34px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, #000, transparent 75%);
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, #000, transparent 75%);
+}
+[data-theme="light"] .ai-panel-grid {
+  background-image:
+    linear-gradient(rgba(15, 23, 42, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.05) 1px, transparent 1px);
+}
+
+/* ============================================================
    Bookshelf — warm, paper-textured shelf with a real book hinge.
    All styles scoped to .bs-section so nothing bleeds into the
    deep-space theme. Prefix: bs-  (ported from the reference shelf)
