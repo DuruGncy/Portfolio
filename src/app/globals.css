@@ -110,17 +110,6 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
-/* Tailwind v4's preflight dropped the classic `button { cursor: pointer }`, so
-   restore it once here rather than sprinkling `cursor-pointer` on every button.
-   Disabled controls keep their own cursor (e.g. `disabled:cursor-wait`). */
-button:not(:disabled),
-[role="button"]:not([aria-disabled="true"]),
-select:not(:disabled),
-summary,
-label[for] {
-  cursor: pointer;
-}
-
 /* Lenis controls scroll; disable native smooth to avoid double-easing. */
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;
@@ -144,7 +133,7 @@ body {
   color: #fff;
 }
 [data-theme="light"] ::selection {
-  background: rgba(14, 116, 144, 0.22);
+  background: rgba(144, 14, 138, 0.22);
   color: #0d1220;
 }
 
@@ -496,6 +485,15 @@ body {
   70%, 100% { transform: scale(1.55); opacity: 0; }
 }
 
+/* "Agent is composing" dots in the text transcript. */
+.ai-typing-dot {
+  animation: ai-typing 1.1s ease-in-out infinite;
+}
+@keyframes ai-typing {
+  0%, 60%, 100% { opacity: 0.25; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+
 /* Faint blueprint texture inside the assistant console panel. */
 .ai-panel-grid {
   background-image:
@@ -509,46 +507,6 @@ body {
   background-image:
     linear-gradient(rgba(15, 23, 42, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(15, 23, 42, 0.05) 1px, transparent 1px);
-}
-
-/* Microphone <select>. A native control can't be fully restyled, so the
-   closed state is ours (own chevron, glass pill) and the popup is handed to
-   the OS with `color-scheme` + explicit option colours so it at least opens
-   in the right theme instead of flashing white on the dark console. */
-.ai-select {
-  appearance: none;
-  -webkit-appearance: none;
-  color-scheme: dark;
-  background-color: color-mix(in oklab, var(--surface) 60%, transparent);
-  /* Room on the right for the chevron drawn by the wrapper. */
-  padding-right: 2rem;
-  text-overflow: ellipsis;
-}
-[data-theme="light"] .ai-select {
-  color-scheme: light;
-}
-.ai-select:hover {
-  border-color: var(--border-strong);
-  background-color: color-mix(in oklab, var(--surface-2) 75%, transparent);
-}
-/* Firefox keeps the dotted inner focus ring; :focus-visible covers us. */
-.ai-select:-moz-focusring {
-  color: transparent;
-  text-shadow: 0 0 0 var(--fg);
-}
-.ai-select option {
-  background: var(--surface);
-  color: var(--fg);
-}
-
-/* The chevron rotates when the list is open — CSS can't see that state, so
-   settle for a hover lift that hints the control is live. */
-.ai-select-chevron {
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s;
-}
-.ai-select-wrap:hover .ai-select-chevron {
-  color: var(--fg);
-  transform: translateY(1px);
 }
 
 /* ============================================================
