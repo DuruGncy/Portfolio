@@ -39,3 +39,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Skills
+.github/Skills
+.claude
+DESIGN.md
+PRODUCT.md
+design.js
+.impeccable
+
+# impeccable live-mode session state (config.json is committed)
+.impeccable/live/sessions/
+

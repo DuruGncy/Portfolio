@@ -169,7 +169,7 @@ export function Skills() {
                   onClick={() => setActive(skill)}
                   aria-label={`${skill.name} — ${skill.description}`}
                   className={clsx(
-                    "group inline-flex items-center gap-2 rounded-xl border px-3.5 py-2.5 text-sm transition-colors duration-300",
+                    "group inline-flex items-center gap-2 rounded-full border py-2 pl-2 pr-4 text-sm transition-colors duration-300",
                     isActive
                       ? "bg-surface-2 text-fg"
                       : "glass text-muted hover:text-fg"
@@ -181,7 +181,7 @@ export function Skills() {
                   }
                 >
                   <span
-                    className="flex h-6 w-6 items-center justify-center rounded-md transition-colors"
+                    className="flex h-6 w-6 items-center justify-center rounded-full transition-colors"
                     style={{ background: `${skill.color}1f`, color: skill.color }}
                   >
                     <Icon className="h-3.5 w-3.5" />
