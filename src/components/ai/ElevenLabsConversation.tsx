@@ -119,6 +119,18 @@ const IDLE_SNAPSHOT: AssistantSnapshot = {
 /** Let the agent's greeting land before a queued question is sent. */
 const PENDING_QUESTION_DELAY = 700;
 
+/**
+ * ElevenLabs voices take *audio tags* — `[happy]`, `[laughs]`, `[whispers]` —
+ * as delivery directions. They're spoken as emotion, not as words, but they do
+ * come through in the transcript, where they read as stage directions nobody
+ * asked for. Strip them before anything reaches the screen.
+ */
+const AUDIO_TAG = /\[[^\][]{0,40}\]/g;
+
+function stripAudioTags(text: string): string {
+  return text.replace(AUDIO_TAG, " ").replace(/\s+/g, " ").trim();
+}
+
 const AssistantContext = createContext<AssistantApi | null>(null);
 
 /** Loaded on demand — see the note at the top of this file. */
@@ -197,7 +209,7 @@ export function AssistantProvider({ children }: { children: React.ReactNode }) {
   /** Incoming turns from the agent — including transcripts of what we said. */
   const handleMessage = useCallback(
     (role: "user" | "agent", text: string) => {
-      const trimmed = text.trim();
+      const trimmed = stripAudioTags(text);
       if (!trimmed) return;
 
       if (role === "user") {
@@ -330,7 +342,9 @@ export function AssistantProvider({ children }: { children: React.ReactNode }) {
    */
   const deliver = useCallback(
     (text: string) => {
-      const trimmed = text.trim();
+      // Normalised the same way incoming turns are, so the echo guard below
+      // still matches when the server sends our own words back.
+      const trimmed = stripAudioTags(text);
       if (!trimmed) return;
       echoGuardRef.current.push(trimmed);
       appendMessage("user", trimmed);
@@ -470,7 +484,12 @@ export function phaseLabel(phase: AssistantPhase, mode: AssistantMode = "voice")
     case "error":
       return "Error";
     default:
-      return "Disconnected";
+      // The idle phase is the *resting* state, and this label is rendered as
+      // the panel's largest heading. "Disconnected" described the socket and
+      // read as a fault to someone who had not tried anything yet; the state
+      // is really an invitation, so it names one. The technical truth still
+      // shows in the Standby lamp and the panel's STANDBY readout.
+      return "Ready when you are";
   }
 }
 

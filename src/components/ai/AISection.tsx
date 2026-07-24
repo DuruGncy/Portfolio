@@ -202,9 +202,9 @@ export function AISection() {
                 {...stageMotion}
                 className="relative mt-8 flex flex-col items-center"
               >
-                <AssistantOrb size={168} />
+                <AssistantOrb size={116} />
                 <p
-                  className="mt-8 font-display text-2xl font-semibold tracking-tight"
+                  className="mt-6 font-display text-2xl font-semibold tracking-tight"
                   aria-live="polite"
                 >
                   {phaseLabel(phase, mode)}
@@ -216,7 +216,7 @@ export function AISection() {
                 {/* Live captions — useful with the sound off, and the only way
                     to follow along if the agent's audio ever drops. */}
                 <Transcript
-                  className="mt-6 h-36 w-full rounded-2xl border border-border-subtle bg-bg-2/40 p-4"
+                  className="mt-5 h-64 w-full rounded-2xl border border-border-subtle bg-bg-2/40 p-4"
                   emptyHint="What you both say will appear here."
                 />
                 <MicrophonePicker className="mt-5" />
@@ -238,7 +238,7 @@ export function AISection() {
                   </div>
                 </div>
 
-                <Transcript className="mt-5 h-60 rounded-2xl border border-border-subtle bg-bg-2/40 p-4" />
+                <Transcript className="mt-5 h-72 rounded-2xl border border-border-subtle bg-bg-2/40 p-4" />
                 <Composer className="mt-4" />
               </motion.div>
             )}

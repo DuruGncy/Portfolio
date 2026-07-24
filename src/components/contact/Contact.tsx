@@ -21,27 +21,13 @@ export function Contact() {
     >
       {/* ---- closing statement ---- */}
       <div className="mx-auto max-w-3xl text-center">
-        <motion.span
-          initial={reduced ? undefined : { opacity: 0, y: 10 }}
-          whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 rounded-full glass px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-muted"
-        >
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal opacity-70" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-teal" />
-          </span>
-          Available from June 2026
-        </motion.span>
-
         <motion.h2
           initial={reduced ? undefined : { opacity: 0, y: 16 }}
           whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
           id="contact-title"
-          className="mt-6 font-display text-5xl font-bold leading-[1.02] tracking-tight text-balance sm:text-6xl md:text-7xl"
+          className="font-display text-5xl font-bold leading-[1.02] tracking-tight text-balance sm:text-6xl md:text-7xl"
         >
           Let&apos;s build something{" "}
           <span className="aurora-text">together</span>.

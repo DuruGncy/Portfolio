@@ -12,6 +12,7 @@ import {
 import {
   ArrowUp,
   AudioLines,
+  ChevronDown,
   Loader2,
   MessageSquareText,
   Mic,
@@ -241,7 +242,7 @@ export function StatusLamps({ className }: { className?: string }) {
       <Lamp label="Listening" lit={phase === "listening"} color="var(--cyan)" />
       <Lamp label="Speaking" lit={phase === "speaking"} color="var(--violet)" />
       <Lamp
-        label="Disconnected"
+        label="Standby"
         lit={!active && status !== "connected"}
         color="var(--fg-subtle)"
       />
@@ -378,22 +379,25 @@ export function MicrophonePicker({
   return (
     <div className={clsx("w-full", className)}>
       <div className="flex items-center gap-2">
-        <Mic className="h-3.5 w-3.5 shrink-0 text-subtle" />
-        <select
-          value={deviceId ?? ""}
-          onChange={(e) => setDeviceId(e.target.value || null)}
-          aria-label="Microphone"
-          className="min-w-0 flex-1 truncate rounded-full border border-border-subtle bg-surface/60 px-3 py-2 text-xs text-fg transition-colors duration-300 focus:border-border-strong"
-        >
-          <option value="">
-            {labelsVisible ? "System default" : "Default microphone"}
-          </option>
-          {devices.map((d, i) => (
-            <option key={d.deviceId} value={d.deviceId}>
-              {d.label || `Microphone ${i + 1}`}
+        <div className="ai-select-wrap relative flex min-w-0 flex-1 items-center">
+          <Mic className="pointer-events-none absolute left-3 h-3.5 w-3.5 shrink-0 text-subtle" />
+          <select
+            value={deviceId ?? ""}
+            onChange={(e) => setDeviceId(e.target.value || null)}
+            aria-label="Microphone"
+            className="ai-select w-full min-w-0 truncate rounded-full border border-border-subtle py-2 pl-9 text-xs text-fg transition-[background-color,border-color] duration-300 focus:border-border-strong"
+          >
+            <option value="">
+              {labelsVisible ? "System default" : "Default microphone"}
             </option>
-          ))}
-        </select>
+            {devices.map((d, i) => (
+              <option key={d.deviceId} value={d.deviceId}>
+                {d.label || `Microphone ${i + 1}`}
+              </option>
+            ))}
+          </select>
+          <ChevronDown className="ai-select-chevron pointer-events-none absolute right-3 h-3.5 w-3.5 text-subtle" />
+        </div>
 
         {/* Testing while connected would fight the SDK for the device. */}
         {!active && (
@@ -491,7 +495,7 @@ export function Transcript({
   className?: string;
   emptyHint?: string;
 }) {
-  const { messages, phase } = useAssistant();
+  const { messages } = useAssistant();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Pin to the newest turn. Scrolling the container directly (rather than
@@ -499,7 +503,7 @@ export function Transcript({
   useLayoutEffect(() => {
     const el = scrollRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [messages.length, phase]);
+  }, [messages.length]);
 
   return (
     <div
@@ -530,21 +534,6 @@ export function Transcript({
             {m.text}
           </div>
         ))
-      )}
-
-      {/* the agent is composing — three dots in the agent's bubble slot */}
-      {phase === "speaking" && (
-        <div className="self-start rounded-2xl rounded-bl-md border border-border-subtle glass px-3.5 py-3">
-          <span className="flex gap-1">
-            {[0, 1, 2].map((i) => (
-              <span
-                key={i}
-                className="ai-typing-dot h-1.5 w-1.5 rounded-full bg-teal"
-                style={{ animationDelay: `${i * 0.16}s` }}
-              />
-            ))}
-          </span>
-        </div>
       )}
     </div>
   );

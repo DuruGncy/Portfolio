@@ -230,6 +230,7 @@ export function Terminal({ start = true }: { start?: boolean }) {
   const [input, setInput] = useState("");
   const [history, setHistory] = useState<string[]>([]);
   const [histIdx, setHistIdx] = useState<number | null>(null);
+  const [focused, setFocused] = useState(false);
 
   const idRef = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -421,18 +422,31 @@ export function Terminal({ start = true }: { start?: boolean }) {
           <div className="mt-2 flex items-center gap-2">
             <span className="text-teal">➜</span>
             <span className="text-cyan">~</span>
-            <input
-              ref={inputRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={onKeyDown}
-              spellCheck={false}
-              autoComplete="off"
-              autoCapitalize="off"
-              aria-label="Terminal command input"
-              className="flex-1 bg-transparent text-fg outline-none"
-              style={{ caretColor: "var(--teal)" }}
-            />
+            <span className="relative flex flex-1 items-center">
+              <input
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={onKeyDown}
+                onFocus={() => setFocused(true)}
+                onBlur={() => setFocused(false)}
+                spellCheck={false}
+                autoComplete="off"
+                autoCapitalize="off"
+                aria-label="Terminal command input"
+                className="w-full bg-transparent text-fg outline-none"
+                style={{ caretColor: "var(--teal)" }}
+              />
+              {/* Idle cursor. Without it the prompt sits there inert once the
+                  welcome has typed out, and nothing says the terminal takes
+                  input — the real caret only appears on focus. Hidden while
+                  focused (the caret takes over) and once anything is typed. */}
+              {!focused && input === "" && (
+                <span aria-hidden className="pointer-events-none absolute left-0">
+                  {promptCursor}
+                </span>
+              )}
+            </span>
           </div>
         )}
       </div>

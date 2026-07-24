@@ -33,36 +33,42 @@ import {
  * same conversation, so starting downstairs and continuing up here never opens
  * a second connection.
  *
- * Visibility is deliberate: the hero stays untouched, so the widget only exists
- * once the hero has scrolled out of view, and it retreats again if the visitor
- * scrolls back up.
+ * Visibility is deliberate: while the AI section itself is on screen the widget
+ * would only duplicate the console sitting right there, so it stays away until
+ * that section has scrolled past — and retreats again if the visitor scrolls
+ * back up to it.
  */
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 /**
- * True once the hero has left the viewport. Watching the element rather than a
- * scroll threshold keeps the rule honest at any hero height or zoom level.
+ * True once the AI section has scrolled off the top of the viewport. Watching
+ * the element rather than a scroll threshold keeps the rule honest at any
+ * section height or zoom level.
+ *
+ * `boundingClientRect` disambiguates the two ways a section can be off screen:
+ * only "above the viewport" counts, so the widget stays hidden on the hero.
  */
-function usePastHero(): boolean {
+function usePastAISection(): boolean {
   const [past, setPast] = useState(false);
 
   useEffect(() => {
-    const hero = document.getElementById("home");
+    const section = document.getElementById("ai-assistant");
 
-    if (!hero) {
-      // Defensive fallback — the hero is always rendered today.
-      const onScroll = () => setPast(window.scrollY > window.innerHeight * 0.8);
+    if (!section) {
+      // Defensive fallback — the AI section is always rendered today.
+      const onScroll = () => setPast(window.scrollY > window.innerHeight * 1.8);
       onScroll();
       window.addEventListener("scroll", onScroll, { passive: true });
       return () => window.removeEventListener("scroll", onScroll);
     }
 
     const observer = new IntersectionObserver(
-      ([entry]) => setPast(!entry.isIntersecting),
+      ([entry]) =>
+        setPast(!entry.isIntersecting && entry.boundingClientRect.bottom <= 0),
       { threshold: 0 }
     );
-    observer.observe(hero);
+    observer.observe(section);
     return () => observer.disconnect();
   }, []);
 
@@ -71,7 +77,7 @@ function usePastHero(): boolean {
 
 export function FloatingAssistant() {
   const reduced = useReducedMotion();
-  const pastHero = usePastHero();
+  const pastAISection = usePastAISection();
   const { scrollTo } = useSmoothScroll();
 
   const open = useUIStore((s) => s.assistantOpen);
@@ -85,7 +91,7 @@ export function FloatingAssistant() {
   const connecting = phase === "connecting" || phase === "permission";
   const isVoice = mode === "voice";
 
-  const visible = pastHero && !dismissed;
+  const visible = pastAISection && !dismissed;
 
   // Esc closes the expanded panel, matching the mobile menu and project modal.
   useEffect(() => {
@@ -187,7 +193,7 @@ export function FloatingAssistant() {
                       transition={{ duration: 0.24, ease: EASE }}
                       className="relative mt-4 flex flex-col items-center"
                     >
-                      <AssistantOrb size={104} />
+                      <AssistantOrb size={80} />
                       <LevelMeter className="mt-3 w-full" />
                       <MicrophonePicker className="mt-3" compact />
                     </motion.div>
@@ -201,7 +207,7 @@ export function FloatingAssistant() {
                       className="relative mt-4"
                     >
                       <Transcript
-                        className="h-44 rounded-xl border border-border-subtle bg-bg-2/40 p-3"
+                        className="h-56 rounded-xl border border-border-subtle bg-bg-2/40 p-3"
                         emptyHint="Type a question to get started."
                       />
                       <Composer className="mt-3" />
