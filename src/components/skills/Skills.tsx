@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import {
   Code2,
@@ -10,10 +10,13 @@ import {
   Wrench,
   LayoutGrid,
   MousePointerClick,
+  ArrowDownToLine,
+  RotateCcw,
 } from "lucide-react";
 import { skills, skillDescriptions } from "@/content/skills";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { clsx } from "@/lib/clsx";
+import { PhysicsDrop, PHYSICS_BODY_ATTR } from "@/components/ui/PhysicsDrop";
 
 // Category identity: icon + accent colour.
 const CATEGORY_META: Record<
@@ -73,6 +76,9 @@ export function Skills() {
   const reduced = useReducedMotion();
   const [category, setCategory] = useState("All");
   const [active, setActive] = useState<FlatSkill | null>(null);
+  const [dropped, setDropped] = useState(false);
+
+  const reset = useCallback(() => setDropped(false), []);
 
   const filtered = useMemo(
     () =>
@@ -106,7 +112,7 @@ export function Skills() {
       </div>
 
       {/* filter tabs */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         {TABS.map((tab) => {
           const activeTab = category === tab.id;
           const Icon = tab.icon;
@@ -115,9 +121,13 @@ export function Skills() {
               key={tab.id}
               onClick={() => setCategory(tab.id)}
               aria-pressed={activeTab}
+              // Filtering mounts and unmounts chips, which would pull bodies out
+              // from under the running simulation. Reset first.
+              disabled={dropped}
               className={clsx(
-                "relative flex items-center gap-2 rounded-full px-4 py-2 text-sm transition-[color,transform] duration-200 active:scale-[0.97]",
-                activeTab ? "text-fg" : "text-subtle hover:text-fg"
+                "relative flex items-center gap-2 rounded-full px-4 py-2 text-sm transition-[color,transform,opacity] duration-200 active:scale-[0.97]",
+                activeTab ? "text-fg" : "text-subtle hover:text-fg",
+                dropped && "pointer-events-none opacity-40"
               )}
             >
               {activeTab && (
@@ -140,13 +150,38 @@ export function Skills() {
             </button>
           );
         })}
+
+        {/* The whole point of this control is the motion, so it has nothing to
+            offer a visitor who asked for less of it. */}
+        {!reduced && (
+          <button
+            type="button"
+            onClick={() => setDropped((d) => !d)}
+            className="group ml-auto flex shrink-0 items-center gap-2 rounded-full glass px-4 py-2 font-mono text-[11px] uppercase tracking-[0.2em] text-subtle transition-[color,transform] duration-200 hover:text-fg active:scale-[0.97]"
+          >
+            {dropped ? (
+              <RotateCcw className="h-3.5 w-3.5 transition-transform duration-300 group-hover:-rotate-90" />
+            ) : (
+              <ArrowDownToLine className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-y-0.5" />
+            )}
+            {dropped ? "Reset" : "Drop them"}
+          </button>
+        )}
       </div>
 
-      {/* explorer body */}
-      <div className="mt-10 grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:gap-12">
+      {/* explorer body — the physics container, so chips and the detail panel
+          share one world and pile up across the full width of the section */}
+      <PhysicsDrop
+        active={dropped}
+        onDismiss={reset}
+        className="mt-10 grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:gap-12"
+      >
         {/* chip cloud */}
         <motion.div
-          layout={!reduced}
+          // While the chips are physics-driven their positions are written
+          // straight to `style.transform`; framer's layout projection would
+          // fight it for the same property.
+          layout={!reduced && !dropped}
           variants={reduced ? undefined : chipCloud}
           initial={reduced ? undefined : "hidden"}
           whileInView={reduced ? undefined : "show"}
@@ -160,22 +195,28 @@ export function Skills() {
               return (
                 <motion.button
                   key={skill.name}
-                  layout={!reduced}
+                  layout={!reduced && !dropped}
                   variants={reduced ? undefined : chipVariants}
                   exit={reduced ? undefined : "exit"}
                   transition={{ type: "spring", stiffness: 320, damping: 26 }}
-                  onMouseEnter={() => setActive(skill)}
-                  onFocus={() => setActive(skill)}
-                  onClick={() => setActive(skill)}
+                  {...{ [PHYSICS_BODY_ATTR]: true }}
+                  // A dropped chip is something you drag, not something you
+                  // pick — otherwise the panel flickers through every chip
+                  // that tumbles past the cursor.
+                  onMouseEnter={dropped ? undefined : () => setActive(skill)}
+                  onFocus={dropped ? undefined : () => setActive(skill)}
+                  onClick={dropped ? undefined : () => setActive(skill)}
+                  tabIndex={dropped ? -1 : undefined}
                   aria-label={`${skill.name} — ${skill.description}`}
                   className={clsx(
                     "group inline-flex items-center gap-2 rounded-full border py-2 pl-2 pr-4 text-sm transition-colors duration-300",
-                    isActive
+                    isActive && !dropped
                       ? "bg-surface-2 text-fg"
-                      : "glass text-muted hover:text-fg"
+                      : "glass text-muted hover:text-fg",
+                    dropped && "select-none"
                   )}
                   style={
-                    isActive
+                    isActive && !dropped
                       ? { borderColor: skill.color, boxShadow: `0 0 24px -10px ${skill.color}` }
                       : undefined
                   }
@@ -193,13 +234,22 @@ export function Skills() {
           </AnimatePresence>
         </motion.div>
 
-        {/* detail / spotlight panel */}
-        <div className="relative overflow-hidden rounded-2xl glass-strong p-6 lg:sticky lg:top-28 lg:self-start">
+        {/* detail / spotlight panel — a body in its own right, so it falls with
+            the chips and they pile against it */}
+        <div
+          {...{ [PHYSICS_BODY_ATTR]: true }}
+          className={clsx(
+            "relative overflow-hidden rounded-2xl glass-strong p-6 lg:sticky lg:top-28 lg:self-start",
+            dropped && "select-none"
+          )}
+        >
           {/* faint background icon */}
           <DetailIcon
             className="pointer-events-none absolute -right-6 -top-6 h-40 w-40 opacity-[0.04]"
           />
 
+          {/* Content is deliberately frozen while dropped: swapping copy inside
+              a tumbling, fixed-size box only reads as a glitch. */}
           <AnimatePresence mode="wait">
             {active ? (
               <motion.div
@@ -244,7 +294,7 @@ export function Skills() {
             )}
           </AnimatePresence>
         </div>
-      </div>
+      </PhysicsDrop>
     </section>
   );
 }

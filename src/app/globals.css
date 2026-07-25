@@ -6,6 +6,13 @@
    ============================================================ */
 
 :root {
+  /* Native widgets — dropdown popups, scrollbars, focus rings — are painted by
+     the OS, not by us. Without this they follow the *OS* preference, so a
+     visitor on a light OS who picks our dark theme gets a white popup with
+     near-white text. Pinning it here (CSS wins over the `color-scheme` meta in
+     layout.tsx) keeps them locked to the theme actually on screen. */
+  color-scheme: dark;
+
   /* Base surfaces (dark) */
   --bg: #05060b;
   --bg-2: #080a13;
@@ -49,6 +56,8 @@
    below at use-site, so they need no redefinition here.
    Accents are deepened (vs. the neon dark palette) to stay legible on white. */
 [data-theme="light"] {
+  color-scheme: light;
+
   /* Base surfaces (light) */
   --bg: #f6f8fc;
   --bg-2: #eef2f9;
@@ -533,6 +542,36 @@ body {
   background-image:
     linear-gradient(rgba(15, 23, 42, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(15, 23, 42, 0.05) 1px, transparent 1px);
+}
+
+/* Microphone picker. A native <select> paints its own dropdown arrow, which
+   would sit right beside the ChevronDown we render — strip it and keep ours,
+   which is the one that matches the rest of the console. The option list is
+   drawn by the OS and only reads correctly because `color-scheme` is pinned to
+   the active theme at the top of this file. */
+.ai-select {
+  -webkit-appearance: none;
+  appearance: none;
+  /* Opaque, not glass: the closed select sits over the panel's blueprint grid,
+     and a translucent fill let it show through behind the device name. */
+  background-color: var(--surface);
+  color: var(--fg);
+  /* Clears our own chevron at right-3. */
+  padding-right: 2.25rem;
+}
+.ai-select:hover {
+  background-color: var(--surface-2);
+}
+/* Firefox draws the popup itself and inherits neither of the above. */
+.ai-select option {
+  background-color: var(--surface);
+  color: var(--fg);
+}
+.ai-select-chevron {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ai-select-wrap:focus-within .ai-select-chevron {
+  transform: translateY(1px);
 }
 
 /* ============================================================

@@ -81,7 +81,7 @@ export function AISection() {
       id="ai-assistant"
       data-section="ai-assistant"
       aria-labelledby="ai-assistant-title"
-      className="section-pad relative mx-auto max-w-7xl scroll-mt-24 overflow-hidden py-28 md:py-36"
+      className="section-pad relative mx-auto max-w-7xl scroll-mt-24 overflow-hidden py-20 md:py-28"
     >
       {/* oversized editorial index — matches the rest of the page's rhythm */}
       <span
@@ -97,7 +97,7 @@ export function AISection() {
         initial={reduced ? undefined : "hidden"}
         whileInView={reduced ? undefined : "show"}
         viewport={{ once: true, amount: 0.6 }}
-        className="relative mb-14 flex items-center gap-4"
+        className="relative mb-10 flex items-center gap-4"
       >
         <h2
           id="ai-assistant-title"
@@ -111,7 +111,7 @@ export function AISection() {
         </p>
       </motion.div>
 
-      <div className="relative grid items-center gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-16">
+      <div className="relative grid items-center gap-10 lg:grid-cols-[1fr_1fr] lg:gap-12">
         {/* ---------- the pitch ---------- */}
         <motion.div
           variants={reduced ? undefined : stagger}
@@ -121,7 +121,7 @@ export function AISection() {
         >
           <motion.h3
             variants={reduced ? undefined : reveal}
-            className="font-display text-4xl font-semibold leading-[1.05] tracking-tight text-balance sm:text-5xl"
+            className="font-display text-3xl font-semibold leading-[1.05] tracking-tight text-balance sm:text-4xl lg:text-[2.75rem]"
           >
             Don&apos;t read the CV.{" "}
             <span className="aurora-text">Interview it.</span>
@@ -129,7 +129,7 @@ export function AISection() {
 
           <motion.p
             variants={reduced ? undefined : reveal}
-            className="mt-6 max-w-lg text-base leading-[1.75] text-muted text-pretty sm:text-lg"
+            className="mt-5 max-w-lg text-base leading-[1.7] text-muted text-pretty"
           >
             I gave an agent everything on this page — the projects, the stack,
             the Erasmus semester in Brugge, what I&apos;m looking for next. Ask
@@ -140,13 +140,13 @@ export function AISection() {
           {/* openers — one click starts the session and asks the question */}
           <motion.ul
             variants={reduced ? undefined : reveal}
-            className="mt-8 flex flex-wrap gap-2.5"
+            className="mt-6 flex flex-wrap gap-2"
           >
             {PROMPTS.map((prompt) => (
               <li key={prompt}>
                 <button
                   onClick={() => ask(prompt)}
-                  className="group inline-flex items-center gap-2 rounded-full border border-border-subtle glass px-4 py-2.5 text-left text-sm text-muted transition-[transform,border-color,color] duration-300 hover:-translate-y-0.5 hover:border-teal/40 hover:text-fg active:scale-[0.97]"
+                  className="group inline-flex items-center gap-2 rounded-full border border-border-subtle glass px-3.5 py-2 text-left text-[13px] text-muted transition-[transform,border-color,color] duration-300 hover:-translate-y-0.5 hover:border-teal/40 hover:text-fg active:scale-[0.97]"
                 >
                   {prompt}
                   <ArrowUpRight className="h-3.5 w-3.5 shrink-0 text-subtle transition-[transform,color] duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-teal" />
@@ -157,7 +157,7 @@ export function AISection() {
 
           <motion.p
             variants={reduced ? undefined : reveal}
-            className="mt-8 max-w-md border-t border-border-subtle pt-5 font-mono text-xs leading-relaxed text-subtle"
+            className="mt-6 max-w-md border-t border-border-subtle pt-4 font-mono text-[11px] leading-relaxed text-subtle"
           >
             Runs on ElevenLabs Conversational AI. Voice goes over WebRTC and
             asks for microphone access first — text mode never touches your mic.
@@ -170,7 +170,7 @@ export function AISection() {
           whileInView={reduced ? undefined : { opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.9, ease: EASE }}
-          className="relative overflow-hidden rounded-[26px] glass-strong p-7 shadow-[0_50px_90px_-60px_rgba(0,0,0,0.95)] sm:p-10"
+          className="relative overflow-hidden rounded-[22px] glass-strong p-5 shadow-[0_50px_90px_-60px_rgba(0,0,0,0.95)] sm:p-7"
         >
           <span aria-hidden className="ai-panel-grid pointer-events-none absolute inset-0" />
 
@@ -190,7 +190,7 @@ export function AISection() {
           </div>
 
           {/* voice or text — the choice that reshapes everything below */}
-          <div className="relative mt-6 flex justify-center">
+          <div className="relative mt-5 flex justify-center">
             <ModeToggle />
           </div>
 
@@ -200,31 +200,31 @@ export function AISection() {
               <motion.div
                 key="voice"
                 {...stageMotion}
-                className="relative mt-8 flex flex-col items-center"
+                className="relative mt-6 flex flex-col items-center"
               >
-                <AssistantOrb size={116} />
+                <AssistantOrb size={92} />
                 <p
-                  className="mt-6 font-display text-2xl font-semibold tracking-tight"
+                  className="mt-4 font-display text-xl font-semibold tracking-tight"
                   aria-live="polite"
                 >
                   {phaseLabel(phase, mode)}
                 </p>
-                <p className="mt-2 min-h-10 max-w-xs text-center text-sm text-muted text-pretty">
+                <p className="mt-1.5 min-h-9 max-w-xs text-center text-sm text-muted text-pretty">
                   {phaseHint(phase, isMuted, mode)}
                 </p>
-                <LevelMeter className="mt-2 w-full max-w-sm" />
+                <LevelMeter className="mt-1 w-full max-w-sm" />
                 {/* Live captions — useful with the sound off, and the only way
                     to follow along if the agent's audio ever drops. */}
                 <Transcript
-                  className="mt-5 h-64 w-full rounded-2xl border border-border-subtle bg-bg-2/40 p-4"
+                  className="mt-4 h-40 w-full rounded-2xl border border-border-subtle bg-bg-2/40 p-3.5 sm:h-48"
                   emptyHint="What you both say will appear here."
                 />
-                <MicrophonePicker className="mt-5" />
+                <MicrophonePicker className="mt-4" />
               </motion.div>
             ) : (
-              <motion.div key="text" {...stageMotion} className="relative mt-7">
-                <div className="flex items-center gap-4">
-                  <AssistantOrb size={64} />
+              <motion.div key="text" {...stageMotion} className="relative mt-6">
+                <div className="flex items-center gap-3.5">
+                  <AssistantOrb size={56} />
                   <div className="min-w-0">
                     <p
                       className="font-display text-lg font-semibold tracking-tight"
@@ -238,24 +238,24 @@ export function AISection() {
                   </div>
                 </div>
 
-                <Transcript className="mt-5 h-72 rounded-2xl border border-border-subtle bg-bg-2/40 p-4" />
-                <Composer className="mt-4" />
+                <Transcript className="mt-4 h-52 rounded-2xl border border-border-subtle bg-bg-2/40 p-3.5 sm:h-60" />
+                <Composer className="mt-3.5" />
               </motion.div>
             )}
           </AnimatePresence>
 
           {/* status readout */}
-          <div className="relative mt-8 border-t border-border-subtle pt-6">
+          <div className="relative mt-6 border-t border-border-subtle pt-5">
             <StatusLamps className="justify-center" />
           </div>
 
           {/* controls */}
-          <div className="relative mt-7 flex flex-wrap items-center justify-center gap-3">
+          <div className="relative mt-5 flex flex-wrap items-center justify-center gap-3">
             <button
               onClick={active ? stop : start}
               disabled={connecting}
               className={clsx(
-                "group inline-flex items-center gap-2.5 rounded-full px-6 py-3.5 text-sm font-medium transition-[transform,opacity,background-color] duration-300 hover:-translate-y-0.5 active:scale-[0.97] disabled:cursor-wait disabled:opacity-60 disabled:hover:translate-y-0",
+                "group inline-flex items-center gap-2.5 rounded-full px-5 py-3 text-sm font-medium transition-[transform,opacity,background-color] duration-300 hover:-translate-y-0.5 active:scale-[0.97] disabled:cursor-wait disabled:opacity-60 disabled:hover:translate-y-0",
                 active
                   ? "border border-border-strong bg-surface-2 text-fg"
                   : "bg-fg text-bg"
@@ -291,7 +291,7 @@ export function AISection() {
                   transition={{ duration: 0.25, ease: EASE }}
                   onClick={toggleMute}
                   aria-pressed={isMuted}
-                  className="inline-flex items-center gap-2 rounded-full border border-border-subtle px-5 py-3.5 text-sm font-medium text-muted transition-[transform,border-color,color] duration-300 hover:-translate-y-0.5 hover:border-border-strong hover:text-fg active:scale-[0.97]"
+                  className="inline-flex items-center gap-2 rounded-full border border-border-subtle px-4 py-3 text-sm font-medium text-muted transition-[transform,border-color,color] duration-300 hover:-translate-y-0.5 hover:border-border-strong hover:text-fg active:scale-[0.97]"
                 >
                   {isMuted ? (
                     <MicOff className="h-4 w-4 text-violet" />
