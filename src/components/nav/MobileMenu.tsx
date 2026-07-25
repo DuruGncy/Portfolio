@@ -10,6 +10,9 @@ import { clsx } from "@/lib/clsx";
 interface MobileMenuProps {
   open: boolean;
   links: NavLink[];
+  /** Resolves a section id to an href — a bare hash on the home route, a real
+   *  `/#id` navigation anywhere else (see Navbar). */
+  hrefFor: (id: string) => string;
   activeSection: string;
   onClose: () => void;
   onNavigate: (id: string) => void;
@@ -33,6 +36,7 @@ const line: Variants = {
 export function MobileMenu({
   open,
   links,
+  hrefFor,
   activeSection,
   onClose,
   onNavigate,
@@ -114,7 +118,7 @@ export function MobileMenu({
                 <motion.a
                   key={l.id}
                   variants={line}
-                  href={`#${l.id}`}
+                  href={hrefFor(l.id)}
                   aria-current={active ? "true" : undefined}
                   onClick={(e) => {
                     e.preventDefault();

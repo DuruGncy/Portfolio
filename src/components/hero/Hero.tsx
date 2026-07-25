@@ -17,6 +17,7 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useUIStore } from "@/store/ui-store";
 import { useSmoothScroll } from "@/components/smooth-scroll";
 import { NAV_SCROLL_OFFSET } from "@/lib/sections";
+import DotField from "@/components/ui/DotField";
 import { SocialIcon } from "./BrandIcons";
 import { Terminal } from "./Terminal";
 import { DynamicWeight } from "./DynamicWeight";
@@ -218,6 +219,20 @@ export function Hero() {
   const cueOpacity = useTransform(scrollY, [0, span * 0.22], [1, 0]);
   const cueShift = useTransform(scrollY, [0, span * 0.22], [0, 14]);
 
+  // Dot field: the hero's backdrop, and the last layer to leave. It holds
+  // near-full while the content is still readable, then keeps dissolving past
+  // the point the content has already gone (0.55 span) — so the handover to the
+  // next section reads as the texture thinning out rather than a panel ending.
+  // It lifts far less than the content (-24 vs. -70) and pushes in a hair, which
+  // puts it behind the foreground in depth instead of alongside it.
+  const dotsOpacity = useTransform(
+    scrollY,
+    [0, span * 0.3, span * 0.72],
+    [1, 0.82, 0]
+  );
+  const dotsLift = useTransform(scrollY, [0, span * 0.6], [0, -24]);
+  const dotsScale = useTransform(scrollY, [0, span], [1, 1.05]);
+
   // Compose mouse depth + scroll lift into a single Y per column.
   const contentY = useTransform(
     [contentMouseY, contentLift],
@@ -280,11 +295,50 @@ export function Hero() {
       onMouseLeave={onSectionLeave}
       className="section-pad relative mx-auto flex min-h-[100svh] max-w-[96rem] items-center py-28 lg:py-24"
     >
+      {/* Dot field backdrop — three wrappers, one job each.
+          1. Breaks out of the section's `max-w-[96rem]` cap to span the full
+             viewport width (`inset-0` would stop at the centred column's edges,
+             leaving gutters on wide screens). Its own `-translate-x-1/2` is why
+             this layer stays static: Framer Motion writes `transform` inline on
+             the elements it drives, which would drop the class.
+          2. Scroll exit — opacity / parallax / scale.
+          3. Wake-up fade, plus the edge mask. Split from (2) for the reason
+             spelled out around `heroFade`: one element cannot both animate
+             `opacity` and honour a MotionValue bound to it. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 left-1/2 z-0 w-screen -translate-x-1/2"
+      >
+        <motion.div
+          style={
+            reduced
+              ? undefined
+              : { opacity: dotsOpacity, y: dotsLift, scale: dotsScale }
+          }
+          className="h-full w-full"
+        >
+          <motion.div
+            initial={reduced ? false : { opacity: 0 }}
+            animate={reduced || booted ? { opacity: 1 } : { opacity: 0 }}
+            transition={{ duration: 1.6, ease: EASE, delay: reduced ? 0 : 0.3 }}
+            className="hero-dots h-full w-full"
+          >
+            <DotField
+              dotRadius={2}
+              dotSpacing={20}
+              cursorRadius={420}
+              bulgeStrength={46}
+              glowRadius={260}
+            />
+          </motion.div>
+        </motion.div>
+      </div>
+
       {/* Scroll fade. Owns nothing but `opacity`, and sits *above* the variant
           tree so the entrance animations below can't claim the property. */}
       <motion.div
         style={reduced ? undefined : { opacity: heroFade }}
-        className="w-full"
+        className="relative z-10 w-full"
       >
         <motion.div
           initial={reduced ? false : "hidden"}
@@ -413,7 +467,7 @@ export function Hero() {
       <motion.div
         aria-hidden
         style={reduced ? undefined : { opacity: cueOpacity }}
-        className="pointer-events-none absolute inset-x-0 bottom-7 hidden flex-col items-center sm:flex"
+        className="pointer-events-none absolute inset-x-0 bottom-7 z-10 hidden flex-col items-center sm:flex"
       >
         <motion.div
           initial={reduced ? false : { opacity: 0 }}

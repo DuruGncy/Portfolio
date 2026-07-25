@@ -211,6 +211,32 @@ body {
   .ambient-grid--drift { animation: none; }
 }
 
+/* ------------------------------------------------------------ hero dot field
+   Spatial half of the hero backdrop's exit (the temporal half — opacity,
+   parallax, scale off scroll — is owned by <Hero />).
+
+   The canvas spans the full viewport width, so on its own it would end in a
+   hard horizontal cut right where the next section begins. This fades it in
+   below the navbar and dissolves it well before the section's bottom edge.
+   Vertical only — left and right land on the screen edge, where there is no
+   seam to hide. */
+.hero-dots {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 13%,
+    #000 55%,
+    transparent 96%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 13%,
+    #000 55%,
+    transparent 96%
+  );
+}
+
 @keyframes boot-blink {
   0%, 50% { opacity: 1; }
   50.01%, 100% { opacity: 0; }

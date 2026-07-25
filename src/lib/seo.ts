@@ -7,7 +7,7 @@ const DESCRIPTION = profile.heroIntro;
 export const siteMetadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${profile.name} — ${profile.title}`,
+    default: `${profile.name} | ${profile.title}`,
     template: `%s — ${profile.name}`,
   },
   description: DESCRIPTION,
@@ -44,13 +44,13 @@ export const siteMetadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: SITE_URL,
-    title: `${profile.name} — ${profile.title}`,
+    title: `${profile.name} | ${profile.title}`,
     description: DESCRIPTION,
     siteName: `${profile.name} Portfolio`,
   },
   twitter: {
     card: "summary_large_image",
-    title: `${profile.name} — ${profile.title}`,
+    title: `${profile.name} | ${profile.title}`,
     description: DESCRIPTION,
   },
   robots: { index: true, follow: true },

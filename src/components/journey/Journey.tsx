@@ -11,6 +11,7 @@ import {
   GraduationCap,
   MapPin,
 } from "lucide-react";
+import TiltedCard from "@/components/ui/TiltedCard";
 import { timeline } from "@/content/timeline";
 import type { TimelineEntry } from "@/types";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -79,52 +80,69 @@ function Milestone({ entry, index }: { entry: TimelineEntry; index: number }) {
             : "lg:ml-[54%] lg:items-start lg:text-left"
         )}
       >
-        {/* Photo (expands slightly when active) */}
+        {/* Photo (expands slightly when active, tilts under the cursor) */}
         <motion.div
           animate={reduced ? undefined : { scale: active ? 1.04 : 1 }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className={clsx(
-            "relative w-full max-w-sm overflow-hidden rounded-xl border p-1.5 transition-colors duration-500",
+            "relative w-full max-w-sm rounded-xl border p-1.5 transition-colors duration-500",
             lit ? "border-cyan/40 bg-surface" : "border-border-subtle bg-surface"
           )}
         >
-          <div
-            className="relative flex aspect-[16/10] items-center justify-center overflow-hidden rounded-lg"
-            style={{ background: meta.gradient }}
-          >
-            {entry.image ? (
-              // Real photo fills the frame; the gradient stays behind it as a
-              // tint while it loads. sizes tracks the max-w-sm (≈384px) card.
-              <Image
-                src={entry.image}
-                alt={entry.role}
-                fill
-                sizes="(max-width: 1024px) 100vw, 384px"
-                className="object-cover"
-              />
-            ) : (
-              /* emblem — icon set in a designed ring */
-              <span className="relative flex h-14 w-14 items-center justify-center rounded-full border border-white/20">
-                <span
+          <div className="aspect-[16/10] w-full">
+            <TiltedCard
+              containerWidth="100%"
+              containerHeight="100%"
+              imageWidth="100%"
+              imageHeight="100%"
+              rotateAmplitude={9}
+              scaleOnHover={1.04}
+              showMobileWarning={false}
+              captionText={entry.location ?? entry.org ?? entry.role}
+              displayOverlayContent={Boolean(year)}
+              overlayContent={
+                /* Floats above the photo on the Z axis, so it separates from
+                   the frame as the card tilts. */
+                <span className="absolute right-2 top-2 rounded-full bg-black/40 px-2 py-0.5 font-mono text-[9px] tabular-nums tracking-wider text-white/80 backdrop-blur-sm">
+                  {year}
+                </span>
+              }
+            >
+              <div
+                className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-lg [transform:translateZ(0)]"
+                style={{ background: meta.gradient }}
+              >
+                {entry.image ? (
+                  // Real photo fills the frame; the gradient stays behind it as
+                  // a tint while it loads. sizes tracks the max-w-sm (≈384px)
+                  // card.
+                  <Image
+                    src={entry.image}
+                    alt={entry.role}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 384px"
+                    className="object-cover"
+                  />
+                ) : (
+                  /* emblem — icon set in a designed ring */
+                  <span className="relative flex h-14 w-14 items-center justify-center rounded-full border border-white/20">
+                    <span
+                      aria-hidden
+                      className="absolute inset-0 scale-[1.3] rounded-full border border-white/10"
+                    />
+                    <Icon className="h-6 w-6 text-white/75" />
+                  </span>
+                )}
+                <span className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_120%_at_50%_0%,transparent_55%,rgba(0,0,0,0.4))]" />
+                {/* active sheen */}
+                <motion.span
                   aria-hidden
-                  className="absolute inset-0 scale-[1.3] rounded-full border border-white/10"
+                  className="pointer-events-none absolute inset-0 bg-[linear-gradient(120deg,transparent,rgba(34,211,238,0.18),transparent)]"
+                  animate={reduced ? undefined : { opacity: active ? 1 : 0 }}
+                  transition={{ duration: 0.6 }}
                 />
-                <Icon className="h-6 w-6 text-white/75" />
-              </span>
-            )}
-            {year && (
-              <span className="absolute right-2 top-2 rounded-full bg-black/30 px-2 py-0.5 font-mono text-[9px] tabular-nums tracking-wider text-white/70">
-                {year}
-              </span>
-            )}
-            <span className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_120%_at_50%_0%,transparent_55%,rgba(0,0,0,0.4))]" />
-            {/* active sheen */}
-            <motion.span
-              aria-hidden
-              className="pointer-events-none absolute inset-0 bg-[linear-gradient(120deg,transparent,rgba(34,211,238,0.18),transparent)]"
-              animate={reduced ? undefined : { opacity: active ? 1 : 0 }}
-              transition={{ duration: 0.6 }}
-            />
+              </div>
+            </TiltedCard>
           </div>
         </motion.div>
 

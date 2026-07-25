@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { Menu } from "lucide-react";
 import { NAV_LINKS, NAV_SCROLL_OFFSET } from "@/lib/sections";
@@ -17,6 +18,11 @@ export function Navbar() {
   const booted = useUIStore((s) => s.booted);
   const reduced = useUIStore((s) => s.reducedMotion);
   const { scrollTo, stop, start } = useSmoothScroll();
+
+  // Every nav target is a section of the home page. Off that route (the 404),
+  // there is nothing to scroll to, so the links have to navigate instead.
+  const pathname = usePathname();
+  const onHome = pathname === "/";
 
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -48,7 +54,17 @@ export function Navbar() {
     mass: 0.3,
   });
 
+  /** Anchor href — real navigation off-home so middle/right-click still work. */
+  function hrefFor(id: string) {
+    if (onHome) return `#${id}`;
+    return id === "home" ? "/" : `/#${id}`;
+  }
+
   function navigate(id: string) {
+    if (!onHome) {
+      window.location.href = hrefFor(id);
+      return;
+    }
     setActiveSection(id); // optimistic highlight
     if (id === "home") scrollTo(0);
     else scrollTo(`#${id}`, { offset: NAV_SCROLL_OFFSET });
@@ -83,7 +99,7 @@ export function Navbar() {
         >
           {/* Brand → Home */}
           <a
-            href="#home"
+            href={hrefFor("home")}
             aria-label="Duru Gencay — back to top"
             onClick={(e) => {
               e.preventDefault();
@@ -106,7 +122,7 @@ export function Navbar() {
               return (
                 <a
                   key={l.id}
-                  href={`#${l.id}`}
+                  href={hrefFor(l.id)}
                   aria-current={active ? "true" : undefined}
                   onClick={(e) => {
                     e.preventDefault();
@@ -164,6 +180,7 @@ export function Navbar() {
       <MobileMenu
         open={menuOpen}
         links={NAV_LINKS}
+        hrefFor={hrefFor}
         activeSection={activeSection}
         onClose={closeMenu}
         onNavigate={(id) => {
