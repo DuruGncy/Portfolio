@@ -22,11 +22,23 @@ const META: Record<
   string,
   { icon: React.ComponentType<{ className?: string }>; gradient: string }
 > = {
-  "start-degree": { icon: BookOpen, gradient: "linear-gradient(135deg,#4f46e5,#1e1b4b)" },
-  ambassador: { icon: Users, gradient: "linear-gradient(135deg,#0d9488,#134e4a)" },
-  internship: { icon: Database, gradient: "linear-gradient(135deg,#0891b2,#0c4a6e)" },
+  "start-degree": {
+    icon: BookOpen,
+    gradient: "linear-gradient(135deg,#4f46e5,#1e1b4b)",
+  },
+  ambassador: {
+    icon: Users,
+    gradient: "linear-gradient(135deg,#0d9488,#134e4a)",
+  },
+  internship: {
+    icon: Database,
+    gradient: "linear-gradient(135deg,#0891b2,#0c4a6e)",
+  },
   erasmus: { icon: Plane, gradient: "linear-gradient(135deg,#7c3aed,#2e1065)" },
-  graduation: { icon: GraduationCap, gradient: "linear-gradient(135deg,#2dd4bf,#7c3aed)" },
+  graduation: {
+    icon: GraduationCap,
+    gradient: "linear-gradient(135deg,#2dd4bf,#7c3aed)",
+  },
 };
 
 function Milestone({ entry, index }: { entry: TimelineEntry; index: number }) {
@@ -40,6 +52,7 @@ function Milestone({ entry, index }: { entry: TimelineEntry; index: number }) {
   const Icon = meta.icon;
   const left = index % 2 === 0; // side on desktop
   const milestone = entry.milestone;
+  const contain = entry.imageFit === "contain";
   const year = entry.date.match(/\d{4}/)?.[0] ?? "";
 
   return (
@@ -52,7 +65,7 @@ function Milestone({ entry, index }: { entry: TimelineEntry; index: number }) {
             milestone ? "h-11 w-11" : "h-8 w-8",
             lit
               ? "border-cyan bg-surface shadow-[0_0_22px_2px_rgba(34,211,238,0.55)]"
-              : "border-border-subtle bg-surface"
+              : "border-border-subtle bg-surface",
           )}
         >
           {active && (
@@ -61,7 +74,7 @@ function Milestone({ entry, index }: { entry: TimelineEntry; index: number }) {
           <Icon
             className={clsx(
               milestone ? "h-5 w-5" : "h-4 w-4",
-              lit ? "text-cyan" : "text-subtle"
+              lit ? "text-cyan" : "text-subtle",
             )}
           />
         </span>
@@ -69,7 +82,9 @@ function Milestone({ entry, index }: { entry: TimelineEntry; index: number }) {
 
       {/* Card */}
       <motion.div
-        initial={reduced ? undefined : { opacity: 0, x: left ? -40 : 40, y: 16 }}
+        initial={
+          reduced ? undefined : { opacity: 0, x: left ? -40 : 40, y: 16 }
+        }
         whileInView={reduced ? undefined : { opacity: 1, x: 0, y: 0 }}
         viewport={{ once: true, amount: 0.4 }}
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
@@ -77,7 +92,7 @@ function Milestone({ entry, index }: { entry: TimelineEntry; index: number }) {
           "ml-16 flex flex-col lg:ml-0",
           left
             ? "lg:mr-[54%] lg:items-end lg:text-right"
-            : "lg:ml-[54%] lg:items-start lg:text-left"
+            : "lg:ml-[54%] lg:items-start lg:text-left",
         )}
       >
         {/* Photo (expands slightly when active, tilts under the cursor) */}
@@ -86,10 +101,15 @@ function Milestone({ entry, index }: { entry: TimelineEntry; index: number }) {
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className={clsx(
             "relative w-full max-w-sm rounded-xl border p-1.5 transition-colors duration-500",
-            lit ? "border-cyan/40 bg-surface" : "border-border-subtle bg-surface"
+            lit
+              ? "border-cyan/40 bg-surface"
+              : "border-border-subtle bg-surface",
           )}
         >
-          <div className="aspect-[16/10] w-full">
+          <div
+            className="w-full"
+            style={{ aspectRatio: entry.imageAspect ?? "16 / 10" }}
+          >
             <TiltedCard
               containerWidth="100%"
               containerHeight="100%"
@@ -98,7 +118,7 @@ function Milestone({ entry, index }: { entry: TimelineEntry; index: number }) {
               rotateAmplitude={9}
               scaleOnHover={1.04}
               showMobileWarning={false}
-              captionText={entry.location ?? entry.org ?? entry.role}
+              showTooltip={false}
               displayOverlayContent={Boolean(year)}
               overlayContent={
                 /* Floats above the photo on the Z axis, so it separates from
@@ -113,16 +133,31 @@ function Milestone({ entry, index }: { entry: TimelineEntry; index: number }) {
                 style={{ background: meta.gradient }}
               >
                 {entry.image ? (
-                  // Real photo fills the frame; the gradient stays behind it as
-                  // a tint while it loads. sizes tracks the max-w-sm (≈384px)
+                  // Real photo over the gradient, which stays behind it as a
+                  // tint while it loads. sizes tracks the max-w-sm (≈384px)
                   // card.
-                  <Image
-                    src={entry.image}
-                    alt={entry.role}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 384px"
-                    className="object-cover"
-                  />
+                  <>
+                    {contain && (
+                      /* Letterbox filler: the same photo blown up and blurred,
+                         so the bars beside a portrait shot read as depth
+                         rather than as empty frame. */
+                      <Image
+                        src={entry.image}
+                        alt=""
+                        aria-hidden
+                        fill
+                        sizes="(max-width: 1024px) 100vw, 384px"
+                        className="scale-125 object-cover opacity-45 blur-2xl saturate-150"
+                      />
+                    )}
+                    <Image
+                      src={entry.image}
+                      alt={entry.role}
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 384px"
+                      className={contain ? "object-contain" : "object-cover"}
+                    />
+                  </>
                 ) : (
                   /* emblem — icon set in a designed ring */
                   <span className="relative flex h-14 w-14 items-center justify-center rounded-full border border-white/20">
@@ -154,14 +189,12 @@ function Milestone({ entry, index }: { entry: TimelineEntry; index: number }) {
           <h3 className="mt-2 font-display text-lg font-semibold leading-snug text-fg">
             {entry.role}
           </h3>
-          {entry.org && (
-            <p className="mt-1 text-sm text-muted">{entry.org}</p>
-          )}
+          {entry.org && <p className="mt-1 text-sm text-muted">{entry.org}</p>}
           {entry.location && (
             <p
               className={clsx(
                 "mt-1.5 inline-flex items-center gap-1.5 font-mono text-xs text-subtle",
-                left && "lg:flex-row-reverse"
+                left && "lg:flex-row-reverse",
               )}
             >
               <MapPin className="h-3 w-3" />
@@ -172,7 +205,7 @@ function Milestone({ entry, index }: { entry: TimelineEntry; index: number }) {
             <div
               className={clsx(
                 "mt-3 flex flex-wrap gap-1.5",
-                left && "lg:justify-end"
+                left && "lg:justify-end",
               )}
             >
               {entry.bullets.map((b) => (

@@ -41,6 +41,13 @@ export interface TimelineEntry {
   /** Optional real photo (e.g. "/duru_erasmus.png" in /public). When set, it
    *  replaces the generated gradient + icon emblem in the timeline card. */
   image?: string;
+  /** CSS aspect-ratio for that photo's frame. Defaults to the timeline's
+   *  landscape "16 / 10"; override for portrait shots that a landscape crop
+   *  would decapitate. */
+  imageAspect?: string;
+  /** "cover" (default) crops to fill the frame; "contain" shows the whole
+   *  photo and fills the leftover with a blurred copy of itself. */
+  imageFit?: "cover" | "contain";
 }
 
 export interface ArchitectureNode {

@@ -40,6 +40,10 @@
   /* Effects */
   --glass: rgba(255, 255, 255, 0.04);
   --glass-strong: rgba(255, 255, 255, 0.07);
+  /* Full-screen scrim. The chip glasses above are a 4–7% tint — sheer enough
+     for a 44px button, nowhere near enough behind a full page of nav labels,
+     where the scrolling content reads straight through the text. */
+  --scrim: rgba(5, 6, 11, 0.94);
   --blur: 16px;
   --radius: 18px;
 
@@ -85,6 +89,7 @@
   /* Effects — frosted white glass instead of a white-on-black tint */
   --glass: rgba(255, 255, 255, 0.5);
   --glass-strong: rgba(255, 255, 255, 0.72);
+  --scrim: rgba(246, 248, 252, 0.95);
 }
 
 /* Map tokens into Tailwind's theme so `bg-surface`, `text-muted`, etc. work. */
@@ -311,6 +316,16 @@ body {
     backdrop-filter: blur(calc(var(--blur) + 6px));
     -webkit-backdrop-filter: blur(calc(var(--blur) + 6px));
     border: 1px solid var(--border-strong);
+  }
+
+  /* Full-screen overlays (the mobile menu). Same frosted family as .glass, but
+     the tint is a near-opaque wash of the page background instead of a sheer
+     white film — at this size the blur alone can't keep the content behind
+     from competing with the labels on top. No border: it has no edge to draw. */
+  .glass-scrim {
+    background: var(--scrim);
+    backdrop-filter: blur(calc(var(--blur) + 8px)) saturate(150%);
+    -webkit-backdrop-filter: blur(calc(var(--blur) + 8px)) saturate(150%);
   }
 
   .aurora-border {

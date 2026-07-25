@@ -204,20 +204,41 @@ export function Hero() {
   // expresses the same intent with none of the fragility.
   const { scrollY } = useScroll();
   const [vh, setVh] = useState(0);
+  const [heroH, setHeroH] = useState(0);
   useEffect(() => {
-    const measure = () => setVh(window.innerHeight);
+    const measure = () => {
+      setVh(window.innerHeight);
+      setHeroH(sectionRef.current?.offsetHeight ?? 0);
+    };
     measure();
     window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
+    // Height alone can change without a resize (fonts landing, the terminal
+    // growing as it types), and this is a static box read — not a scroll-linked
+    // measurement — so it stays stable under Lenis.
+    const el = sectionRef.current;
+    const ro = el ? new ResizeObserver(measure) : null;
+    if (el && ro) ro.observe(el);
+    return () => {
+      window.removeEventListener("resize", measure);
+      ro?.disconnect();
+    };
   }, []);
   // SSR / first paint has no viewport yet; 800 keeps the ranges sane until the
   // effect lands on the same frame.
   const span = vh || 800;
-  const contentLift = useTransform(scrollY, [0, span * 0.6], [0, -70]);
-  const termLift = useTransform(scrollY, [0, span * 0.6], [0, -28]);
-  const heroFade = useTransform(scrollY, [0, span * 0.55], [1, 0]);
-  const cueOpacity = useTransform(scrollY, [0, span * 0.22], [1, 0]);
-  const cueShift = useTransform(scrollY, [0, span * 0.22], [0, 14]);
+  // On phones the grid stacks, so the hero is taller than one viewport and the
+  // terminal starts *below* the fold. Nothing may fade before it has had its
+  // turn on screen, so the whole exit is offset by the hero's overflow: it
+  // begins the moment the section's bottom edge reaches the viewport's bottom.
+  // A one-viewport hero (every `lg` layout) has no overflow, so `exit` is 0 and
+  // the desktop timing is untouched.
+  const exit = Math.max(0, heroH - span);
+  const at = (f: number) => exit + span * f;
+  const contentLift = useTransform(scrollY, [exit, at(0.6)], [0, -70]);
+  const termLift = useTransform(scrollY, [exit, at(0.6)], [0, -28]);
+  const heroFade = useTransform(scrollY, [exit, at(0.55)], [1, 0]);
+  const cueOpacity = useTransform(scrollY, [exit, at(0.22)], [1, 0]);
+  const cueShift = useTransform(scrollY, [exit, at(0.22)], [0, 14]);
 
   // Dot field: the hero's backdrop, and the last layer to leave. It holds
   // near-full while the content is still readable, then keeps dissolving past
@@ -227,11 +248,11 @@ export function Hero() {
   // puts it behind the foreground in depth instead of alongside it.
   const dotsOpacity = useTransform(
     scrollY,
-    [0, span * 0.3, span * 0.72],
+    [exit, at(0.3), at(0.72)],
     [1, 0.82, 0]
   );
-  const dotsLift = useTransform(scrollY, [0, span * 0.6], [0, -24]);
-  const dotsScale = useTransform(scrollY, [0, span], [1, 1.05]);
+  const dotsLift = useTransform(scrollY, [exit, at(0.6)], [0, -24]);
+  const dotsScale = useTransform(scrollY, [exit, at(1)], [1, 1.05]);
 
   // Compose mouse depth + scroll lift into a single Y per column.
   const contentY = useTransform(

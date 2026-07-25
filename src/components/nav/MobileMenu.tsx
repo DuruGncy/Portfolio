@@ -92,7 +92,7 @@ export function MobileMenu({
           initial="hidden"
           animate="show"
           exit="exit"
-          className="fixed inset-0 z-[60] flex flex-col glass-strong lg:hidden"
+          className="glass-scrim fixed inset-0 z-[60] flex flex-col lg:hidden"
         >
           <div className="section-pad flex items-center justify-between py-5">
             <span className="font-mono text-xs uppercase tracking-[0.3em] text-accent">

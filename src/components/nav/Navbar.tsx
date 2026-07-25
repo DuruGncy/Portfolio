@@ -184,6 +184,11 @@ export function Navbar() {
         activeSection={activeSection}
         onClose={closeMenu}
         onNavigate={(id) => {
+          // Scrolling is locked while the menu is open, and a stopped Lenis
+          // silently drops `scrollTo` — so release the lock *before* the jump.
+          // The unlock effect that follows `closeMenu` is then a no-op instead
+          // of resetting the scroll we just started.
+          start();
           navigate(id);
           closeMenu();
         }}

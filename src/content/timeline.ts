@@ -59,6 +59,10 @@ export const timeline: TimelineEntry[] = [
     description: "B.Sc. Software Engineering.",
     place: "izmir",
     milestone: true,
+    // Tall 480×912 shot — a 16/10 crop cuts her head off, so the frame goes
+    // portrait and the whole photo is shown inside it.
     image: "/duru_graduation.png",
+    imageAspect: "3 / 4",
+    imageFit: "contain",
   },
 ];
