@@ -40,9 +40,9 @@ export function Contact() {
           transition={{ duration: 0.6, delay: 0.12 }}
           className="mx-auto mt-5 max-w-xl text-pretty text-muted"
         >
-          Backend & cloud engineer, graduating June 2026 and ready to relocate in
-          Europe. If you&apos;re hiring — or just want to talk systems — my inbox
-          is open.
+          Backend & cloud engineer, graduated June 2026 and ready to relocate
+          in Europe. If you&apos;re hiring — or just want to talk systems — my
+          inbox is open.
         </motion.p>
 
         <motion.div

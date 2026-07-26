@@ -8,7 +8,7 @@ export const profile: Profile = {
     "Software Engineering graduate specializing in cloud and backend development — building serverless systems on AWS and tuning databases on Azure. Based in Izmir.",
   aboutParagraphs: [
     "I'm Duru — a software engineer who got hooked on building things the first time I watched code turn into something people could actually use.",
-    "I'm finishing my B.Sc. in Software Engineering at Yaşar University in Izmir (June 2026), with an Erasmus semester studying Applied Computer Science in Brugge, Belgium behind me — my first taste of living and building abroad, and the experience that set my direction.",
+    "I graduated in June 2026 with a B.Sc. in Software Engineering from Yaşar University in Izmir, with an Erasmus semester studying Applied Computer Science in Brugge, Belgium along the way — my first taste of living and building abroad, and the experience that set my direction.",
     "Most of my energy goes into the cloud — I love the puzzle of making systems that are reliable, scalable, and don't cost a fortune to run.",
     "I got hands-on with Oracle and Azure SQL during my internship at Arkas – Bimar IT, and I've been building serverless projects on AWS — Lambda, DynamoDB, EventBridge — ever since. When I'm not thinking about databases and pipelines, I'm in Unity building game mechanics or deep in a sci-fi or philosophy novel.",
     "I speak Turkish, English (C1), and I'm learning Dutch.",
