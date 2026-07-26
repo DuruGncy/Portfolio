@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { books } from "@/content/books";
 import type { Book } from "@/types";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { SectionIndex } from "@/components/ui/SectionIndex";
 
 /* ── Organic lean: deterministic trig mix (from the reference shelf) ── */
 function getLean(idx: number) {
@@ -440,10 +441,10 @@ export function Books() {
       id="books"
       data-section="books"
       aria-labelledby="books-title"
-      className="section-pad relative mx-auto max-w-7xl scroll-mt-24 py-28 md:py-36"
+      className="section-pad relative mx-auto max-w-[100rem] scroll-mt-24 py-28 md:py-36"
     >
-      {/* site masthead — keeps the numbered-section rhythm */}
-      <div className="mb-4 flex items-center gap-4">
+      <SectionIndex>07</SectionIndex>
+      <div className="relative mb-4 flex items-center gap-4">
         <h2
           id="books-title"
           className="font-mono text-xs uppercase tracking-[0.3em] text-accent"
@@ -531,7 +532,9 @@ export function Books() {
                           color: b.spineText,
                           width: b.spineW,
                           height: b.h,
-                          transform: isOpen ? "rotateY(-60deg)" : "rotateY(0deg)",
+                          transform: isOpen
+                            ? "rotateY(-60deg)"
+                            : "rotateY(0deg)",
                         }}
                         dangerouslySetInnerHTML={{
                           __html: b.spineImage
@@ -547,7 +550,9 @@ export function Books() {
                         style={{
                           width: b.coverW,
                           height: b.h,
-                          transform: isOpen ? "rotateY(30deg)" : "rotateY(88.8deg)",
+                          transform: isOpen
+                            ? "rotateY(30deg)"
+                            : "rotateY(88.8deg)",
                           visibility: isOpen ? "visible" : "hidden",
                         }}
                         dangerouslySetInnerHTML={{
@@ -620,7 +625,9 @@ export function Books() {
                     ))}
                   </span>
                 </div>
-                <p className="bs-card-thoughts">&ldquo;{selected.thoughts}&rdquo;</p>
+                <p className="bs-card-thoughts">
+                  &ldquo;{selected.thoughts}&rdquo;
+                </p>
               </motion.div>
             )}
           </AnimatePresence>

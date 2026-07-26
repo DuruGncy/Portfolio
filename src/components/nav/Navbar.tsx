@@ -95,7 +95,7 @@ export function Navbar() {
       >
         <nav
           aria-label="Primary"
-          className="section-pad mx-auto flex max-w-[96rem] items-center justify-between"
+          className="section-pad mx-auto flex max-w-[120rem] items-center justify-between"
         >
           {/* Brand → Home */}
           <a
@@ -173,7 +173,7 @@ export function Navbar() {
         <motion.div
           aria-hidden
           style={{ scaleX: progress }}
-          className="mx-auto mt-2 hidden h-px max-w-[96rem] origin-left bg-[var(--aurora)] opacity-70 lg:block"
+          className="mx-auto mt-2 hidden h-px max-w-[120rem] origin-left bg-[var(--aurora)] opacity-70 lg:block"
         />
       </motion.header>
 

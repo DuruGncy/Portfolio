@@ -11,6 +11,7 @@ import {
   X,
 } from "lucide-react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { SectionIndex } from "@/components/ui/SectionIndex";
 import { clsx } from "@/lib/clsx";
 import { phaseHint, phaseLabel, useAssistant } from "./ElevenLabsConversation";
 import {
@@ -81,15 +82,9 @@ export function AISection() {
       id="ai-assistant"
       data-section="ai-assistant"
       aria-labelledby="ai-assistant-title"
-      className="section-pad relative mx-auto max-w-7xl scroll-mt-24 overflow-hidden py-20 md:py-28"
+      className="section-pad relative mx-auto max-w-[100rem] scroll-mt-24 overflow-hidden py-20 md:py-28"
     >
-      {/* oversized editorial index — matches the rest of the page's rhythm */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -top-6 right-2 select-none font-display text-[28vw] font-bold leading-none text-white/[0.02] md:text-[16rem]"
-      >
-        02
-      </span>
+      <SectionIndex>02</SectionIndex>
 
       {/* masthead */}
       <motion.div

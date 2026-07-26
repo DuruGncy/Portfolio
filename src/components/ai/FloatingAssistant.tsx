@@ -148,7 +148,7 @@ export function FloatingAssistant() {
                 }
                 transition={{ duration: 0.42, ease: EASE }}
                 style={{ transformOrigin: "bottom right" }}
-                className="relative w-[min(21rem,calc(100vw-2rem))] overflow-hidden rounded-[22px] glass-strong p-5 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.95)]"
+                className="relative w-[min(21rem,calc(100vw-2rem))] overflow-hidden rounded-[22px] glass-panel p-5 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.95)]"
               >
                 <span
                   aria-hidden
@@ -305,7 +305,7 @@ export function FloatingAssistant() {
             {/* tooltip — pointer devices only; touch users get the label via aria */}
             <span
               aria-hidden
-              className="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-full glass-strong px-3.5 py-2 text-xs text-muted opacity-0 shadow-lg transition-[opacity,transform] duration-300 [transform:translateX(6px)] group-hover:opacity-100 group-hover:[transform:translateX(0)] group-focus-within:opacity-100 group-focus-within:[transform:translateX(0)] sm:block"
+              className="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-full glass-panel px-3.5 py-2 text-xs text-muted opacity-0 shadow-lg transition-[opacity,transform] duration-300 [transform:translateX(6px)] group-hover:opacity-100 group-hover:[transform:translateX(0)] group-focus-within:opacity-100 group-focus-within:[transform:translateX(0)] sm:block"
             >
               {open ? "Minimize the assistant" : "Chat with my AI assistant"}
             </span>

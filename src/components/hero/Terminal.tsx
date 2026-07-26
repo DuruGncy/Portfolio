@@ -30,10 +30,7 @@ function Head({ children }: { children: React.ReactNode }) {
 }
 
 // ---- command registry ----------------------------------------------------
-type CommandMap = Record<
-  string,
-  { desc: string; run: () => React.ReactNode }
->;
+type CommandMap = Record<string, { desc: string; run: () => React.ReactNode }>;
 
 function buildCommands(): CommandMap {
   const workIds = new Set(["ambassador", "internship"]);
@@ -61,7 +58,9 @@ function buildCommands(): CommandMap {
       desc: "who is Duru?",
       run: () => (
         <div className="space-y-1">
-          <Head>{profile.name} · {profile.title}</Head>
+          <Head>
+            {profile.name} · {profile.title}
+          </Head>
           <p className="text-fg/90">{profile.heroIntro}</p>
           <p className="text-muted">📍 {profile.location} → Europe</p>
         </div>
@@ -277,7 +276,7 @@ export function Terminal({ start = true }: { start?: boolean }) {
           <span className="text-teal">➜</span>
           <span className="text-cyan">~</span>
           <span className="text-fg/90">{cmd}</span>
-        </div>
+        </div>,
       );
 
       if (cmd === "") return;
@@ -293,13 +292,13 @@ export function Terminal({ start = true }: { start?: boolean }) {
           <p className="text-red-400/90">
             command not found: {cmd} — type{" "}
             <span className="text-cyan">help</span>
-          </p>
+          </p>,
         );
         return;
       }
       push(<div className="pl-4">{entry.run()}</div>);
     },
-    [push]
+    [push],
   );
 
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -315,7 +314,8 @@ export function Terminal({ start = true }: { start?: boolean }) {
     if (e.key === "ArrowUp") {
       e.preventDefault();
       if (history.length === 0) return;
-      const idx = histIdx === null ? history.length - 1 : Math.max(0, histIdx - 1);
+      const idx =
+        histIdx === null ? history.length - 1 : Math.max(0, histIdx - 1);
       setHistIdx(idx);
       setInput(history[idx]);
       return;
@@ -359,7 +359,7 @@ export function Terminal({ start = true }: { start?: boolean }) {
         }}
       />
     ),
-    [reduced, awake]
+    [reduced, awake],
   );
 
   return (
@@ -372,14 +372,14 @@ export function Terminal({ start = true }: { start?: boolean }) {
         "overflow-hidden rounded-2xl border transition-[border-color,box-shadow] duration-500",
         awake
           ? "border-border-strong shadow-[0_0_0_1px_rgba(45,212,191,0.15),0_30px_80px_-45px_rgba(0,0,0,0.9)]"
-          : "border-border-subtle shadow-[0_20px_60px_-50px_rgba(0,0,0,0.8)]"
+          : "border-border-subtle shadow-[0_20px_60px_-50px_rgba(0,0,0,0.8)]",
       )}
     >
       {/* Title bar */}
       <div
         className={clsx(
           "flex items-center gap-4 border-b border-border-subtle bg-white/[0.02] px-4 py-3 transition-opacity duration-500",
-          awake ? "opacity-100" : "opacity-70"
+          awake ? "opacity-100" : "opacity-70",
         )}
       >
         <div className="flex items-center gap-2" aria-hidden>
@@ -397,8 +397,8 @@ export function Terminal({ start = true }: { start?: boolean }) {
       <div
         ref={scrollRef}
         className={clsx(
-          "h-[420px] overflow-y-auto p-5 font-mono text-[13px] leading-relaxed transition-opacity duration-500 sm:h-[470px]",
-          awake ? "opacity-100" : "opacity-80"
+          "h-[420px] overflow-y-auto p-5 font-mono text-[13px] leading-relaxed transition-opacity duration-500 sm:h-[470px] lg:p-6 lg:[@media(min-height:900px)]:h-[500px]",
+          awake ? "opacity-100" : "opacity-80",
         )}
         role="log"
         aria-label="Terminal output"
@@ -442,7 +442,10 @@ export function Terminal({ start = true }: { start?: boolean }) {
                   input — the real caret only appears on focus. Hidden while
                   focused (the caret takes over) and once anything is typed. */}
               {!focused && input === "" && (
-                <span aria-hidden className="pointer-events-none absolute left-0">
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute left-0"
+                >
                   {promptCursor}
                 </span>
               )}

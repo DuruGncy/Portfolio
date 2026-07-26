@@ -1,24 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Duru Gencay">
-  <!-- Aurora tile — the design-token gradient (teal → cyan → violet), using the
-       deepened light-theme stops so the white monogram keeps ~3.5:1 contrast
-       against every point of the ramp. Mirrors the aurora token in globals.css. -->
-  <defs>
-    <linearGradient id="aurora" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#0d9488" />
-      <stop offset="0.42" stop-color="#0891b2" />
-      <stop offset="1" stop-color="#7c3aed" />
-    </linearGradient>
-  </defs>
-  <rect width="64" height="64" rx="14" fill="url(#aurora)" />
-  <!-- Glass edge: keeps the tile from dissolving into a light browser chrome. -->
-  <rect x="0.75" y="0.75" width="62.5" height="62.5" rx="13.25" fill="none"
-        stroke="#ffffff" stroke-opacity="0.22" stroke-width="1.5" />
-  <!-- DG monogram drawn as strokes, not text, so it needs no font at render
-       time and stays identical in the .ico / apple-icon rasterizations.
-       The G's circle overshoots the D's flat top/bottom by 0.5u — the usual
-       optical correction so the round letter doesn't read as smaller. -->
-  <g fill="none" stroke="#f8fafc" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M9 44V20h6a8.5 12 0 0 1 0 24Z" />
-    <path d="M52.34 23.16A12.5 12.5 0 1 0 56 32H45.5" />
+  <!-- White tile, black DG monogram. The letterforms are real Sora outlines
+       (wght 700) — the same display face the hero name is set in — converted to
+       paths so the icon needs no webfont at render time and stays identical
+       across icon.svg, favicon.ico and apple-icon.png. -->
+  <rect width="64" height="64" rx="14" fill="#ffffff" />
+  <!-- Hairline edge: keeps the white tile from dissolving into a light
+       browser chrome or a white iOS background. -->
+  <rect x="0.5" y="0.5" width="63" height="63" rx="13.5" fill="none"
+        stroke="#000000" stroke-opacity="0.12" />
+  <g fill="#000000">
+    <path d="M13.48 43.5V38.74H17.69Q19.3 38.74 20.57 38.26Q21.84 37.78 22.73 36.89Q23.62 36 24.1 34.75Q24.57 33.51 24.57 31.98Q24.57 30.38 24.1 29.13Q23.62 27.89 22.73 27.03Q21.84 26.16 20.57 25.72Q19.3 25.27 17.69 25.27H13.48V20.52H17.42Q20.5 20.52 22.8 21.41Q25.11 22.29 26.65 23.85Q28.19 25.4 28.96 27.41Q29.73 29.42 29.73 31.63V32.32Q29.73 34.38 28.96 36.38Q28.19 38.38 26.65 39.98Q25.11 41.59 22.8 42.54Q20.5 43.5 17.42 43.5ZM9 43.5V20.52H14.1V43.5Z" />
+    <path d="M43.17 43.98Q40.1 43.98 37.84 42.96Q35.58 41.94 34.1 40.24Q32.62 38.53 31.9 36.46Q31.18 34.38 31.18 32.27V31.59Q31.18 29.46 31.9 27.4Q32.63 25.34 34.07 23.67Q35.52 22.01 37.67 21.01Q39.82 20.02 42.67 20.02Q45.73 20.02 48.09 21.15Q50.45 22.28 51.88 24.28Q53.31 26.29 53.55 28.92H48.43Q48.24 27.68 47.45 26.75Q46.65 25.81 45.43 25.29Q44.2 24.77 42.67 24.77Q41.18 24.77 40 25.29Q38.82 25.81 38.01 26.77Q37.19 27.73 36.76 29.06Q36.34 30.38 36.34 31.96Q36.34 33.62 36.8 34.98Q37.26 36.34 38.13 37.31Q39 38.29 40.28 38.81Q41.56 39.34 43.17 39.34Q45.27 39.34 46.82 38.46Q48.37 37.59 49.05 36.16L48.44 39.65V34.25H53.12V39.1Q51.67 41.44 49.1 42.71Q46.53 43.98 43.17 43.98ZM42.5 35.25V31.58H55V35.25Z" />
   </g>
 </svg>

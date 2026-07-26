@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { skills, skillDescriptions } from "@/content/skills";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { SectionIndex } from "@/components/ui/SectionIndex";
 import { clsx } from "@/lib/clsx";
 import { PhysicsDrop, PHYSICS_BODY_ATTR } from "@/components/ui/PhysicsDrop";
 
@@ -45,7 +46,7 @@ const ALL_SKILLS: FlatSkill[] = skills.flatMap((cat) =>
     description: skillDescriptions[name] ?? "",
     color: CATEGORY_META[cat.name]?.color ?? "#22d3ee",
     icon: CATEGORY_META[cat.name]?.icon ?? Code2,
-  }))
+  })),
 );
 
 const TABS = [
@@ -85,7 +86,7 @@ export function Skills() {
       category === "All"
         ? ALL_SKILLS
         : ALL_SKILLS.filter((s) => s.category === category),
-    [category]
+    [category],
   );
 
   const DetailIcon = active?.icon ?? MousePointerClick;
@@ -95,10 +96,12 @@ export function Skills() {
       id="skills"
       data-section="skills"
       aria-labelledby="skills-title"
-      className="section-pad relative mx-auto max-w-7xl scroll-mt-24 py-28 md:py-36"
+      className="section-pad relative mx-auto max-w-[100rem] scroll-mt-24 py-28 md:py-36"
     >
+      <SectionIndex>06</SectionIndex>
+
       {/* masthead */}
-      <div className="mb-12 flex items-center gap-4">
+      <div className="relative mb-12 flex items-center gap-4">
         <h2
           id="skills-title"
           className="font-mono text-xs uppercase tracking-[0.3em] text-accent"
@@ -127,7 +130,7 @@ export function Skills() {
               className={clsx(
                 "relative flex items-center gap-2 rounded-full px-4 py-2 text-sm transition-[color,transform,opacity] duration-200 active:scale-[0.97]",
                 activeTab ? "text-fg" : "text-subtle hover:text-fg",
-                dropped && "pointer-events-none opacity-40"
+                dropped && "pointer-events-none opacity-40",
               )}
             >
               {activeTab && (
@@ -142,7 +145,9 @@ export function Skills() {
               <span
                 className={clsx(
                   "rounded-full px-1.5 py-0.5 font-mono text-[10px]",
-                  activeTab ? "bg-surface-2 text-muted" : "bg-surface-2/60 text-subtle"
+                  activeTab
+                    ? "bg-surface-2 text-muted"
+                    : "bg-surface-2/60 text-subtle",
                 )}
               >
                 {tab.count}
@@ -213,17 +218,23 @@ export function Skills() {
                     isActive && !dropped
                       ? "bg-surface-2 text-fg"
                       : "glass text-muted hover:text-fg",
-                    dropped && "select-none"
+                    dropped && "select-none",
                   )}
                   style={
                     isActive && !dropped
-                      ? { borderColor: skill.color, boxShadow: `0 0 24px -10px ${skill.color}` }
+                      ? {
+                          borderColor: skill.color,
+                          boxShadow: `0 0 24px -10px ${skill.color}`,
+                        }
                       : undefined
                   }
                 >
                   <span
                     className="flex h-6 w-6 items-center justify-center rounded-full transition-colors"
-                    style={{ background: `${skill.color}1f`, color: skill.color }}
+                    style={{
+                      background: `${skill.color}1f`,
+                      color: skill.color,
+                    }}
                   >
                     <Icon className="h-3.5 w-3.5" />
                   </span>
@@ -240,13 +251,11 @@ export function Skills() {
           {...{ [PHYSICS_BODY_ATTR]: true }}
           className={clsx(
             "relative overflow-hidden rounded-2xl glass-strong p-6 lg:sticky lg:top-28 lg:self-start",
-            dropped && "select-none"
+            dropped && "select-none",
           )}
         >
           {/* faint background icon */}
-          <DetailIcon
-            className="pointer-events-none absolute -right-6 -top-6 h-40 w-40 opacity-[0.04]"
-          />
+          <DetailIcon className="pointer-events-none absolute -right-6 -top-6 h-40 w-40 opacity-[0.04]" />
 
           {/* Content is deliberately frozen while dropped: swapping copy inside
               a tumbling, fixed-size box only reads as a glitch. */}
@@ -261,7 +270,10 @@ export function Skills() {
               >
                 <span
                   className="inline-flex items-center gap-2 rounded-full px-3 py-1 font-mono text-[11px] uppercase tracking-wider"
-                  style={{ background: `${active.color}1f`, color: active.color }}
+                  style={{
+                    background: `${active.color}1f`,
+                    color: active.color,
+                  }}
                 >
                   {active.category}
                 </span>
@@ -287,8 +299,9 @@ export function Skills() {
                   Hover a skill
                 </h3>
                 <p className="mt-3 leading-relaxed text-muted text-pretty">
-                  {ALL_SKILLS.length} technologies across {skills.length} categories.
-                  Filter by category and hover any chip to see how I use it.
+                  {ALL_SKILLS.length} technologies across {skills.length}{" "}
+                  categories. Filter by category and hover any chip to see how I
+                  use it.
                 </p>
               </motion.div>
             )}

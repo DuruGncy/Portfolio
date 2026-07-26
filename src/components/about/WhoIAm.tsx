@@ -11,11 +11,16 @@ import {
 import { GraduationCap, Landmark, Building2, Crosshair } from "lucide-react";
 import { profile } from "@/content/profile";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { SectionIndex } from "@/components/ui/SectionIndex";
 import { clsx } from "@/lib/clsx";
 
 const reveal: Variants = {
   hidden: { opacity: 0, y: 22 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
+  },
 };
 
 interface PhotoProps {
@@ -61,7 +66,7 @@ function Photo({
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay }}
       className={clsx(
         "absolute overflow-hidden rounded-xl border border-white/10 bg-surface p-1.5 shadow-[0_40px_70px_-30px_rgba(0,0,0,0.85)] backdrop-blur",
-        className
+        className,
       )}
     >
       <div
@@ -123,15 +128,9 @@ export function WhoIAm() {
       id="who-i-am"
       data-section="who-i-am"
       aria-labelledby="who-i-am-title"
-      className="section-pad relative mx-auto max-w-7xl scroll-mt-24 overflow-hidden py-28 md:py-36"
+      className="section-pad relative mx-auto max-w-[100rem] scroll-mt-24 overflow-hidden py-28 md:py-36"
     >
-      {/* oversized editorial index */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -top-6 right-2 select-none font-display text-[28vw] font-bold leading-none text-white/[0.02] md:text-[16rem]"
-      >
-        03
-      </span>
+      <SectionIndex>03</SectionIndex>
 
       {/* masthead */}
       <motion.div
@@ -156,7 +155,7 @@ export function WhoIAm() {
       <div className="relative grid gap-14 lg:grid-cols-[0.92fr_1.08fr] lg:gap-16">
         {/* ---------- photo composition ---------- */}
         <div className="relative">
-          <div className="relative mx-auto aspect-[5/6] w-full max-w-[30rem]">
+          <div className="relative mx-auto aspect-[5/6] w-full max-w-[30rem] 2xl:max-w-[34rem]">
             <Photo
               tag="01"
               title="Graduation"
@@ -212,7 +211,11 @@ export function WhoIAm() {
 
         {/* ---------- editorial body ---------- */}
         <motion.div
-          variants={reduced ? undefined : { show: { transition: { staggerChildren: 0.08 } } }}
+          variants={
+            reduced
+              ? undefined
+              : { show: { transition: { staggerChildren: 0.08 } } }
+          }
           initial={reduced ? undefined : "hidden"}
           whileInView={reduced ? undefined : "show"}
           viewport={{ once: true, amount: 0.2 }}

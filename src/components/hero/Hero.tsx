@@ -249,7 +249,7 @@ export function Hero() {
   const dotsOpacity = useTransform(
     scrollY,
     [exit, at(0.3), at(0.72)],
-    [1, 0.82, 0]
+    [1, 0.82, 0],
   );
   const dotsLift = useTransform(scrollY, [exit, at(0.6)], [0, -24]);
   const dotsScale = useTransform(scrollY, [exit, at(1)], [1, 1.05]);
@@ -257,11 +257,11 @@ export function Hero() {
   // Compose mouse depth + scroll lift into a single Y per column.
   const contentY = useTransform(
     [contentMouseY, contentLift],
-    ([m, s]: number[]) => m + s
+    ([m, s]: number[]) => m + s,
   );
   const termY = useTransform(
     [termMouseY, termLift],
-    ([m, s]: number[]) => m + s
+    ([m, s]: number[]) => m + s,
   );
 
   // --- name gradient tracks the cursor horizontally, with a slow idle shimmer ---
@@ -314,10 +314,10 @@ export function Hero() {
       aria-labelledby="hero-title"
       onMouseMove={onSectionMove}
       onMouseLeave={onSectionLeave}
-      className="section-pad relative mx-auto flex min-h-[100svh] max-w-[96rem] items-center py-28 lg:py-24"
+      className="section-pad relative mx-auto flex min-h-[100svh] max-w-[120rem] items-center py-28 lg:py-24"
     >
       {/* Dot field backdrop — three wrappers, one job each.
-          1. Breaks out of the section's `max-w-[96rem]` cap to span the full
+          1. Breaks out of the section's `max-w-[120rem]` cap to span the full
              viewport width (`inset-0` would stop at the centred column's edges,
              leaving gutters on wide screens). Its own `-translate-x-1/2` is why
              this layer stays static: Framer Motion writes `transform` inline on
@@ -364,7 +364,7 @@ export function Hero() {
         <motion.div
           initial={reduced ? false : "hidden"}
           animate={reveal}
-          className="grid w-full items-center gap-16 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 xl:gap-24"
+          className="grid w-full items-center gap-16 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12 xl:gap-16 2xl:gap-20"
         >
           {/* LEFT — depth wrapper forwards the entrance state to its children */}
           <motion.div style={depthStyle(contentX, contentY)}>
@@ -376,7 +376,7 @@ export function Hero() {
               onMouseMove={onNameMove}
               onMouseEnter={() => (nameHovered.current = true)}
               onMouseLeave={() => (nameHovered.current = false)}
-              className="font-display text-[clamp(3rem,7.5vw,6rem)] leading-[0.95] tracking-tight text-balance"
+              className="font-display text-[clamp(3rem,7.5vw,6rem)] leading-[0.95] tracking-tight text-balance 2xl:text-[clamp(6rem,6.25vw,8rem)]"
             >
               <DynamicWeight text="Duru " />
               <motion.span
@@ -390,7 +390,7 @@ export function Hero() {
             {/* role — one quiet line, no decorative label */}
             <motion.p
               variants={reduced ? undefined : fadeUp(T.role, 12)}
-              className="mt-5 font-display text-xl font-medium text-muted sm:text-2xl"
+              className="mt-5 font-display text-xl font-medium text-muted sm:text-2xl 2xl:text-3xl"
             >
               Software Engineer
             </motion.p>
@@ -398,7 +398,7 @@ export function Hero() {
             {/* intro — kept to ~three airy lines */}
             <motion.p
               variants={reduced ? undefined : fadeUp(T.intro, 12)}
-              className="mt-7 max-w-lg text-base leading-[1.75] text-muted text-pretty sm:text-lg"
+              className="mt-7 max-w-xl text-base leading-[1.75] text-muted text-pretty sm:text-lg 2xl:max-w-[38rem]"
             >
               {profile.heroIntro}
             </motion.p>
@@ -446,7 +446,10 @@ export function Hero() {
               className="mt-10 flex flex-wrap items-center gap-2.5"
             >
               {profile.socials.map((s) => (
-                <motion.div key={s.label} variants={reduced ? undefined : socialItem}>
+                <motion.div
+                  key={s.label}
+                  variants={reduced ? undefined : socialItem}
+                >
                   <Magnetic strength={0.25}>
                     <a
                       href={s.href}
@@ -471,7 +474,7 @@ export function Hero() {
           <motion.div style={depthStyle(termX, termY)} className="w-full">
             <motion.div
               variants={reduced ? undefined : terminalReveal}
-              className="mx-auto w-full max-w-[580px] lg:ml-auto lg:mr-0"
+              className="mx-auto w-full max-w-[660px] lg:ml-auto lg:mr-0 lg:max-w-none"
             >
               <Terminal start={terminalLive} />
             </motion.div>
@@ -479,12 +482,6 @@ export function Hero() {
         </motion.div>
       </motion.div>
 
-      {/* scroll cue — appears once the sequence settles, then fades out as the
-          hero leaves. The scroll fade is the outermost layer, above the
-          entrance animation, for the same reason as the columns: an element
-          that animates `opacity` will not also honour a `MotionValue` bound to
-          it, and without this the cue rode at full strength straight into the
-          navbar around 800px of scroll. */}
       <motion.div
         aria-hidden
         style={reduced ? undefined : { opacity: cueOpacity }}
@@ -492,8 +489,14 @@ export function Hero() {
       >
         <motion.div
           initial={reduced ? false : { opacity: 0 }}
-          animate={reduced ? { opacity: 1 } : booted ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.6, ease: EASE, delay: reduced ? 0 : T.settle }}
+          animate={
+            reduced ? { opacity: 1 } : booted ? { opacity: 1 } : { opacity: 0 }
+          }
+          transition={{
+            duration: 0.6,
+            ease: EASE,
+            delay: reduced ? 0 : T.settle,
+          }}
           className="flex flex-col items-center gap-2"
         >
           <motion.div

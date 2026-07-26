@@ -12,6 +12,7 @@ import {
   MapPin,
 } from "lucide-react";
 import TiltedCard from "@/components/ui/TiltedCard";
+import { SectionIndex } from "@/components/ui/SectionIndex";
 import { timeline } from "@/content/timeline";
 import type { TimelineEntry } from "@/types";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -41,6 +42,19 @@ const META: Record<
   },
 };
 
+const CARD = {
+  landscape: {
+    width: "max-w-sm sm:max-w-md xl:max-w-lg 2xl:max-w-xl",
+    sizes:
+      "(max-width: 640px) 100vw, (max-width: 1280px) 448px, (max-width: 1536px) 512px, 576px",
+  },
+  portrait: {
+    width: "max-w-xs sm:max-w-sm xl:max-w-[26rem] 2xl:max-w-md",
+    sizes:
+      "(max-width: 640px) 100vw, (max-width: 1280px) 384px, (max-width: 1536px) 416px, 448px",
+  },
+} as const;
+
 function Milestone({ entry, index }: { entry: TimelineEntry; index: number }) {
   const reduced = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
@@ -54,6 +68,9 @@ function Milestone({ entry, index }: { entry: TimelineEntry; index: number }) {
   const milestone = entry.milestone;
   const contain = entry.imageFit === "contain";
   const year = entry.date.match(/\d{4}/)?.[0] ?? "";
+  const aspect = entry.imageAspect ?? "16 / 10";
+  const [aw, ah] = aspect.split("/").map((n) => parseFloat(n));
+  const card = aw / ah < 1 ? CARD.portrait : CARD.landscape;
 
   return (
     <div ref={ref} className="relative">
@@ -100,16 +117,14 @@ function Milestone({ entry, index }: { entry: TimelineEntry; index: number }) {
           animate={reduced ? undefined : { scale: active ? 1.04 : 1 }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className={clsx(
-            "relative w-full max-w-sm rounded-xl border p-1.5 transition-colors duration-500",
+            "relative w-full rounded-xl border p-1.5 transition-colors duration-500",
+            card.width,
             lit
               ? "border-cyan/40 bg-surface"
               : "border-border-subtle bg-surface",
           )}
         >
-          <div
-            className="w-full"
-            style={{ aspectRatio: entry.imageAspect ?? "16 / 10" }}
-          >
+          <div className="w-full" style={{ aspectRatio: aspect }}>
             <TiltedCard
               containerWidth="100%"
               containerHeight="100%"
@@ -133,9 +148,6 @@ function Milestone({ entry, index }: { entry: TimelineEntry; index: number }) {
                 style={{ background: meta.gradient }}
               >
                 {entry.image ? (
-                  // Real photo over the gradient, which stays behind it as a
-                  // tint while it loads. sizes tracks the max-w-sm (≈384px)
-                  // card.
                   <>
                     {contain && (
                       /* Letterbox filler: the same photo blown up and blurred,
@@ -146,7 +158,7 @@ function Milestone({ entry, index }: { entry: TimelineEntry; index: number }) {
                         alt=""
                         aria-hidden
                         fill
-                        sizes="(max-width: 1024px) 100vw, 384px"
+                        sizes={card.sizes}
                         className="scale-125 object-cover opacity-45 blur-2xl saturate-150"
                       />
                     )}
@@ -154,7 +166,7 @@ function Milestone({ entry, index }: { entry: TimelineEntry; index: number }) {
                       src={entry.image}
                       alt={entry.role}
                       fill
-                      sizes="(max-width: 1024px) 100vw, 384px"
+                      sizes={card.sizes}
                       className={contain ? "object-contain" : "object-cover"}
                     />
                   </>
@@ -181,8 +193,7 @@ function Milestone({ entry, index }: { entry: TimelineEntry; index: number }) {
           </div>
         </motion.div>
 
-        {/* Text */}
-        <div className="mt-4 max-w-sm">
+        <div className={clsx("mt-4", card.width)}>
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-accent">
             {entry.date}
           </p>
@@ -244,10 +255,12 @@ export function Journey() {
       id="journey"
       data-section="journey"
       aria-labelledby="journey-title"
-      className="section-pad relative mx-auto max-w-7xl scroll-mt-24 py-28 md:py-36"
+      className="section-pad relative mx-auto max-w-[100rem] scroll-mt-24 py-28 md:py-36"
     >
-      {/* masthead */}
-      <div className="mb-16 flex items-center gap-4">
+      <SectionIndex>04</SectionIndex>
+
+      {/* masthead*/}
+      <div className="relative mb-16 flex items-center gap-4">
         <h2
           id="journey-title"
           className="font-mono text-xs uppercase tracking-[0.3em] text-accent"

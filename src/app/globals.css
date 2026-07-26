@@ -40,6 +40,7 @@
   /* Effects */
   --glass: rgba(255, 255, 255, 0.04);
   --glass-strong: rgba(255, 255, 255, 0.07);
+  --glass-panel: rgba(13, 17, 32, 0.93);
   /* Full-screen scrim. The chip glasses above are a 4–7% tint — sheer enough
      for a 44px button, nowhere near enough behind a full page of nav labels,
      where the scrolling content reads straight through the text. */
@@ -89,6 +90,7 @@
   /* Effects — frosted white glass instead of a white-on-black tint */
   --glass: rgba(255, 255, 255, 0.5);
   --glass-strong: rgba(255, 255, 255, 0.72);
+  --glass-panel: rgba(255, 255, 255, 0.95);
   --scrim: rgba(246, 248, 252, 0.95);
 }
 
@@ -315,6 +317,13 @@ body {
     background: var(--glass-strong);
     backdrop-filter: blur(calc(var(--blur) + 6px));
     -webkit-backdrop-filter: blur(calc(var(--blur) + 6px));
+    border: 1px solid var(--border-strong);
+  }
+
+  .glass-panel {
+    background: var(--glass-panel);
+    backdrop-filter: blur(calc(var(--blur) + 6px)) saturate(150%);
+    -webkit-backdrop-filter: blur(calc(var(--blur) + 6px)) saturate(150%);
     border: 1px solid var(--border-strong);
   }
 

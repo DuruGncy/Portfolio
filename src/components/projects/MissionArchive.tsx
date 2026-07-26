@@ -6,6 +6,7 @@ import { ArrowUpRight, Cloud, Gamepad2 } from "lucide-react";
 import { projects } from "@/content/projects";
 import type { Project } from "@/types";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { SectionIndex } from "@/components/ui/SectionIndex";
 import { clsx } from "@/lib/clsx";
 import { ArchitectureFlow } from "./ArchitectureFlow";
 import { Pillars } from "./Pillars";
@@ -39,7 +40,7 @@ function Preview({
         "glass hover:-translate-y-1",
         isViolet
           ? "hover:border-violet/40 hover:shadow-[0_40px_80px_-40px_rgba(167,139,250,0.5)]"
-          : "hover:border-teal/40 hover:shadow-[0_40px_80px_-40px_rgba(45,212,191,0.5)]"
+          : "hover:border-teal/40 hover:shadow-[0_40px_80px_-40px_rgba(45,212,191,0.5)]",
       )}
     >
       {/* ambient accent glow */}
@@ -53,18 +54,10 @@ function Preview({
         }}
       />
 
-      {/* oversized index */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute right-5 top-2 select-none font-display text-8xl font-bold leading-none text-white/[0.03]"
-      >
-        0{index + 1}
-      </span>
-
       <div
         className={clsx(
           "relative grid items-center gap-8 lg:grid-cols-2 lg:gap-12",
-          flip && "lg:[&>*:first-child]:order-2"
+          flip && "lg:[&>*:first-child]:order-2",
         )}
       >
         {/* text */}
@@ -74,7 +67,7 @@ function Preview({
               "inline-flex items-center gap-2 rounded-full border px-3 py-1 font-mono text-[11px] uppercase tracking-wider",
               isViolet
                 ? "border-violet/30 bg-violet/10 text-violet"
-                : "border-teal/30 bg-teal/10 text-teal"
+                : "border-teal/30 bg-teal/10 text-teal",
             )}
           >
             <KindIcon className="h-3.5 w-3.5" />
@@ -110,7 +103,7 @@ function Preview({
               "mt-7 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-[color,background-color,transform] active:scale-[0.97]",
               isViolet
                 ? "bg-violet/15 text-violet hover:bg-violet/25"
-                : "bg-teal/15 text-teal hover:bg-teal/25"
+                : "bg-teal/15 text-teal hover:bg-teal/25",
             )}
             aria-label={`Open ${project.name} case study`}
           >
@@ -147,10 +140,12 @@ export function MissionArchive() {
       id="mission-archive"
       data-section="mission-archive"
       aria-labelledby="mission-archive-title"
-      className="section-pad relative mx-auto max-w-7xl scroll-mt-24 py-28 md:py-36"
+      className="section-pad relative mx-auto max-w-[100rem] scroll-mt-24 py-28 md:py-36"
     >
+      <SectionIndex>05</SectionIndex>
+
       {/* masthead */}
-      <div className="mb-14 flex items-center gap-4">
+      <div className="relative mb-14 flex items-center gap-4">
         <h2
           id="mission-archive-title"
           className="font-mono text-xs uppercase tracking-[0.3em] text-accent"
