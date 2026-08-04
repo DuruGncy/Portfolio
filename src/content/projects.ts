@@ -43,7 +43,7 @@ export const projects: Project[] = [
       "For time-series data, key design is the single biggest lever on cost and query speed.",
       "Designing for observability and cost from day one beats bolting them on later.",
     ],
-    github: "https://github.com/DuruGncy",
+    github: "https://github.com/DuruGncy/RailPredict-AI",
   },
   {
     id: "project-rift",
@@ -107,6 +107,6 @@ export const projects: Project[] = [
       "Pooling isn't premature optimization in games; it's the difference between smooth and stuttering.",
       "Event-driven architecture keeps modules independent and far easier to reason about.",
     ],
-    github: "https://github.com/DuruGncy",
+    github: "https://github.com/Arfushs/SeniorProject/tree/main",
   },
 ];

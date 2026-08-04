@@ -50,7 +50,7 @@ export default function NotFound() {
             spotlight rather than a sticker pasted onto the deep-space page. */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 -z-10 scale-110 rounded-full bg-[var(--aurora)] opacity-25 blur-3xl"
+          className="pointer-events-none absolute inset-0 -z-10 scale-110 rounded-full [background-image:var(--aurora)] opacity-25 blur-3xl"
         />
         <div className="aspect-[950/847] w-full">
           <TiltedCard

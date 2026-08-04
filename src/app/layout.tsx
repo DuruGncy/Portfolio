@@ -8,6 +8,7 @@ import { SkipLink } from "@/components/nav/SkipLink";
 import { Navbar } from "@/components/nav/Navbar";
 import { AssistantProvider } from "@/components/ai/ElevenLabsConversation";
 import { FloatingAssistant } from "@/components/ai/FloatingAssistant";
+import { ProgressRail } from "@/components/ui/ProgressRail";
 import { siteMetadata, personJsonLd } from "@/lib/seo";
 
 // Self-hosted via next/font → no external requests, no layout shift.
@@ -77,6 +78,8 @@ export default function RootLayout({
           <SmoothScrollProvider>
             <SkipLink />
             <Navbar />
+            {/* Stands in for the (hidden) native scrollbar. */}
+            <ProgressRail />
             {/* One voice session, shared by the showcase section (in `children`)
                 and the floating widget — so neither can open a second one. */}
             <AssistantProvider>

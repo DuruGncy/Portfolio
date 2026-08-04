@@ -136,7 +136,7 @@ export function MobileMenu({
                     {l.label}
                     <span
                       className={clsx(
-                        "absolute -bottom-1 left-0 h-px w-full origin-left bg-[var(--aurora)] transition-transform duration-300",
+                        "absolute -bottom-1 left-0 h-px w-full origin-left [background-image:var(--aurora)] transition-transform duration-300",
                         active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                       )}
                     />

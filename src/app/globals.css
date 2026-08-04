@@ -384,16 +384,19 @@ body {
 }
 
 /* ------------------------------------------------------------ scrollbar */
+/* The document scrollbar is replaced by <ProgressRail>. Inner overflow
+   containers (terminal, transcript, project modal) keep a slim themed bar —
+   without one their scrollability stops being discoverable. */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: var(--surface-2);
   border-radius: 8px;
-  border: 2px solid var(--bg);
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #1f2740;
@@ -403,6 +406,19 @@ body {
 }
 [data-theme="light"] ::-webkit-scrollbar-thumb:hover {
   background: #aeb8ce;
+}
+
+/* Root scrollbar only — hidden, the rail speaks for it. `scrollbar-width` is
+   not inherited, so this never leaks into the containers above. (Don't set
+   `scrollbar-color` here — that one *does* inherit.) */
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 /* ------------------------------------------------------------ reduced motion */

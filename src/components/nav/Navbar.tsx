@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { motion, useScroll, useSpring } from "framer-motion";
+import { motion } from "framer-motion";
 import { Menu } from "lucide-react";
 import { NAV_LINKS, NAV_SCROLL_OFFSET } from "@/lib/sections";
 import { useUIStore } from "@/store/ui-store";
@@ -46,13 +46,8 @@ export function Navbar() {
     return () => start();
   }, [menuOpen, stop, start]);
 
-  // Scroll-progress indicator.
-  const { scrollYProgress } = useScroll();
-  const progress = useSpring(scrollYProgress, {
-    stiffness: 120,
-    damping: 30,
-    mass: 0.3,
-  });
+  // Scroll progress lives in <ProgressRail> on the right edge — one indicator,
+  // and one that shows up on every breakpoint rather than `lg` and up.
 
   /** Anchor href — real navigation off-home so middle/right-click still work. */
   function hrefFor(id: string) {
@@ -145,7 +140,7 @@ export function Navbar() {
                   <span className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-surface-2/0 transition-colors duration-300 group-hover:bg-surface-2/60" />
                   <span className="relative">
                     {l.label}
-                    <span className="absolute -bottom-0.5 left-1/2 h-px w-4/5 -translate-x-1/2 scale-x-0 bg-[var(--aurora)] transition-transform duration-300 group-hover:scale-x-100" />
+                    <span className="absolute -bottom-0.5 left-1/2 h-px w-4/5 -translate-x-1/2 scale-x-0 [background-image:var(--aurora)] transition-transform duration-300 group-hover:scale-x-100" />
                   </span>
                 </a>
               );
@@ -168,13 +163,6 @@ export function Navbar() {
             </button>
           </div>
         </nav>
-
-        {/* Scroll progress bar */}
-        <motion.div
-          aria-hidden
-          style={{ scaleX: progress }}
-          className="mx-auto mt-2 hidden h-px max-w-[120rem] origin-left bg-[var(--aurora)] opacity-70 lg:block"
-        />
       </motion.header>
 
       <MobileMenu
